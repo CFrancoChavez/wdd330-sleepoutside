@@ -50,6 +50,7 @@
             <!-- <text x="0" y="115" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">Created by Natalia Woodroffe</text>
             <text x="0" y="120" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text> -->
           </svg>
+          <span class="cart-count" hidden></span>
         </a>
       </div>
     </header>
@@ -58,7 +59,9 @@
       <section class="products">
         <h2>My Cart</h2>
 
-        <ul class="product-list">
+        <p class="cart-empty" hidden>Your cart is empty. Add a tent to see it here.</p>
+
+        <ul class="product-list cart-list">
           <!-- <li class="cart-card divider">
             <a href="product_pages/marmot-ajax-3.html" class="cart-card__image">
               <img
@@ -90,6 +93,14 @@
             <p class="cart-card__price">$199.99</p>
           </li> -->
         </ul>
+
+        <div class="cart-footer" hidden>
+          <div class="cart-total">
+            <span>Total</span>
+            <strong class="cart-total__amount">$0.00</strong>
+          </div>
+          <a class="button-link" href="/checkout/">Checkout</a>
+        </div>
       </section>
     </main>
 

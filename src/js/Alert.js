@@ -6,7 +6,14 @@ function convertToJson(response) {
 }
 
 export default class Alert {
-  constructor(path = new URL("../json/alerts.json", import.meta.url).href) {
+  constructor(path) {
+    if (!path) {
+      // Calculate path depth: check if we're in a nested directory
+      const allSegments = window.location.pathname.split('/');
+      const nonEmptySegments = allSegments.filter(s => s);
+      const isNestedPage = nonEmptySegments.length > 0 && !window.location.pathname.endsWith('.html');
+      path = isNestedPage ? `../json/alerts.json` : `./json/alerts.json`;
+    }
     this.path = path;
   }
 

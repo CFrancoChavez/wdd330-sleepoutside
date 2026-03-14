@@ -7,19 +7,32 @@ function convertToJson(response) {
 
 export default class Alert {
   constructor(path) {
-    if (!path) {
-      // Calculate depth from pathname: how many slashes indicate nesting
-      const parts = window.location.pathname.split('/').filter(p => p && p !== 'index.html' && !p.includes('.html'));
-      const depth = parts.length;
-      const prefix = depth > 0 ? Array(depth + 1).join('../') : './';
-      path = `${prefix}json/alerts.json`;
-    }
-    this.path = path;
+    this.customPath = path;
   }
 
   async getAlerts() {
-    const data = await fetch(this.path).then(convertToJson);
-    return Array.isArray(data) ? data : [];
+    // Try multiple path strategies to handle different server layouts
+    const pathStrategies = this.customPath ? [this.customPath] : [
+      `./json/alerts.json`,      // Same directory level
+      `../json/alerts.json`,     // One level up
+      `/json/alerts.json`,       // Absolute from root
+      `../../json/alerts.json`,  // Two levels up
+    ];
+
+    for (const path of pathStrategies) {
+      try {
+        const response = await fetch(path);
+        if (response.ok) {
+          const data = await response.json();
+          return Array.isArray(data) ? data : [];
+        }
+      } catch (e) {
+        // Continue to next strategy
+      }
+    }
+    
+    // If all paths fail, return empty array (no alerts is acceptable)
+    return [];
   }
 
   buildAlertSection(alerts) {

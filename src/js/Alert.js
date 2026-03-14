@@ -6,7 +6,7 @@ function convertToJson(response) {
 }
 
 export default class Alert {
-  constructor(path = "/json/alerts.json") {
+  constructor(path = new URL("../json/alerts.json", import.meta.url).href) {
     this.path = path;
   }
 

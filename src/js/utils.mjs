@@ -28,7 +28,24 @@ export function getCartItems() {
 
 export function addProductToCart(product) {
   const cart = getCartItems();
-  cart.push(product);
+  
+  // Check if item already exists in cart
+  const existingItem = cart.find((item) => item.Id === product.Id);
+  
+  if (existingItem) {
+    // Item exists - increment quantity and update lineTotal
+    existingItem.quantity = (existingItem.quantity || 1) + 1;
+    existingItem.lineTotal = (existingItem.lineTotal || Number(existingItem.FinalPrice)) + Number(product.FinalPrice);
+  } else {
+    // Item doesn't exist - add with quantity 1
+    const newItem = {
+      ...product,
+      quantity: 1,
+      lineTotal: Number(product.FinalPrice),
+    };
+    cart.push(newItem);
+  }
+  
   setLocalStorage("so-cart", cart);
   return cart;
 }
@@ -46,20 +63,38 @@ export function removeProductFromCart(productId) {
   return cart;
 }
 
+export function updateProductQuantity(productId, quantity) {
+  const cart = getCartItems();
+  const item = cart.find((cartItem) => cartItem.Id === productId);
+
+  if (!item) {
+    return cart;
+  }
+
+  if (quantity <= 0) {
+    return removeProductFromCart(productId);
+  }
+
+  item.quantity = quantity;
+  item.lineTotal = (item.FinalPrice || item.SuggestedRetailPrice) * quantity;
+  setLocalStorage("so-cart", cart);
+  return cart;
+}
+
 export function groupCartItems(cartItems) {
   return cartItems.reduce((groups, item) => {
     const existingItem = groups.find((group) => group.Id === item.Id);
 
     if (existingItem) {
-      existingItem.quantity += 1;
-      existingItem.lineTotal += Number(item.FinalPrice);
+      existingItem.quantity += item.quantity || 1;
+      existingItem.lineTotal += item.lineTotal || Number(item.FinalPrice);
       return groups;
     }
 
     groups.push({
       ...item,
-      quantity: 1,
-      lineTotal: Number(item.FinalPrice),
+      quantity: item.quantity || 1,
+      lineTotal: item.lineTotal || Number(item.FinalPrice),
     });
     return groups;
   }, []);

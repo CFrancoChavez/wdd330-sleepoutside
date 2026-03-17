@@ -16,10 +16,49 @@
     <header id="main-header" class="divider"></header>
 
     <main class="divider">
+      <nav class="breadcrumb">
+        <a href="../../">Home</a>
+        <span>/</span>
+        <a href="../cart/">My Cart</a>
+        <span>/</span>
+        <span>Checkout</span>
+      </nav>
+
       <section class="products">
         <h2>Review & Place your Order</h2>
+        <ul class="product-list cart-list" id="checkout-items"></ul>
+        <div class="checkout-summary">
+          <div class="cart-total">
+            <span>Total</span>
+            <strong class="cart-total__amount" id="checkout-total">$0.00</strong>
+          </div>
+          <button class="button-link" id="place-order">Place Order</button>
+        </div>
       </section>
     </main>
+
+    <!-- Order confirmation modal -->
+    <div id="confirm-order-modal" class="modal" hidden>
+      <div class="modal-content">
+        <h2>Confirm Your Order</h2>
+        <p>Are you ready to place this order?</p>
+        <div class="modal-buttons">
+          <button class="modal-btn modal-btn--secondary" id="continue-from-confirm-btn">Continue Shopping</button>
+          <button class="modal-btn modal-btn--primary" id="confirm-checkout-btn">Confirm Checkout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order success modal -->
+    <div id="success-order-modal" class="modal" hidden>
+      <div class="modal-content">
+        <h2>Order Placed Successfully!</h2>
+        <p>Thank you for your purchase. Your order has been confirmed.</p>
+        <div class="modal-buttons">
+          <button class="modal-btn modal-btn--primary" id="continue-from-success-btn">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
 
     <footer id="main-footer"></footer>
   </body>

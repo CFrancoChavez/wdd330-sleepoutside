@@ -7,7 +7,7 @@ await loadHeaderFooter();
 
 const dataSource = new ProductData("tents");
 const listElement = document.querySelector(".product-list");
-const productList = new ProductList("tents", dataSource, listElement);
+const productList = new ProductList("tents", dataSource, listElement, 4); // Limit to 4 products
 const alertList = new Alert();
 
 void alertList.init();

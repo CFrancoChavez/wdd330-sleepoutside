@@ -6,6 +6,7 @@ export default class ProductDetails {
     this.product = {};
     this.dataSource = dataSource;
     this.feedbackTimeout = null;
+    this.selectedQuantity = 1;
   }
 
   async init() {
@@ -29,12 +30,60 @@ export default class ProductDetails {
     document
       .getElementById("addToCart")
       .addEventListener("click", this.addProductToCart.bind(this));
+    
+    // Add quantity control listeners
+    document
+      .querySelector(".product-qty-minus")
+      ?.addEventListener("click", this.decrementQuantity.bind(this));
+    
+    document
+      .querySelector(".product-qty-plus")
+      ?.addEventListener("click", this.incrementQuantity.bind(this));
   }
 
   addProductToCart() {
-    addProductToCart(this.product);
+    // Add product with selected quantity to cart
+    const cart = JSON.parse(localStorage.getItem("so-cart") || "[]");
+    const existingItem = cart.find((item) => item.Id === this.product.Id);
+    
+    if (existingItem) {
+      // Increment existing item's quantity
+      existingItem.quantity = (existingItem.quantity || 1) + this.selectedQuantity;
+      existingItem.lineTotal = existingItem.lineTotal + (Number(this.product.FinalPrice) * this.selectedQuantity);
+    } else {
+      // Add new item with selected quantity
+      const newItem = {
+        ...this.product,
+        quantity: this.selectedQuantity,
+        lineTotal: Number(this.product.FinalPrice) * this.selectedQuantity,
+      };
+      cart.push(newItem);
+    }
+    
+    localStorage.setItem("so-cart", JSON.stringify(cart));
     updateCartCount();
     this.showAddedToCartFeedback();
+    this.selectedQuantity = 1;
+    this.updateQuantityDisplay();
+  }
+
+  incrementQuantity() {
+    this.selectedQuantity += 1;
+    this.updateQuantityDisplay();
+  }
+
+  decrementQuantity() {
+    if (this.selectedQuantity > 1) {
+      this.selectedQuantity -= 1;
+      this.updateQuantityDisplay();
+    }
+  }
+
+  updateQuantityDisplay() {
+    const quantityDisplay = document.querySelector(".product-qty-display");
+    if (quantityDisplay) {
+      quantityDisplay.textContent = this.selectedQuantity;
+    }
   }
 
   showAddedToCartFeedback() {
@@ -60,19 +109,36 @@ export default class ProductDetails {
   renderProductDetails() {
     const productSection = document.querySelector(".product-detail");
     const isDiscounted = this.product.FinalPrice < this.product.SuggestedRetailPrice;
+    
+    // Calculate discount percentage
+    let discountText = '';
+    if (isDiscounted) {
+      const discountAmount = this.product.SuggestedRetailPrice - this.product.FinalPrice;
+      const discountPercent = Math.round((discountAmount / this.product.SuggestedRetailPrice) * 100);
+      discountText = `${discountPercent}% OFF`;
+    }
 
     productSection.innerHTML = `
-      <h3>${this.product.Brand.Name}</h3>
-      <h2 class="divider">${this.product.NameWithoutBrand}</h2>
-      ${isDiscounted ? '<span class="product-card__discount">Sale</span>' : ''}
+      <h3>${this.product.Brand?.Name || "Unknown Brand"}</h3>
+      <h2 class="divider">${this.product.NameWithoutBrand || this.product.Name}</h2>
+      ${isDiscounted ? `<span class="product-card__discount">${discountText}</span>` : ''}
       <img
         class="divider"
         src="${this.product.Image}"
         alt="${this.product.Name}"
       />
       <p class="product-card__price">${formatCurrency(this.product.FinalPrice)}</p>
-      <p class="product__color">${this.product.Colors[0].ColorName}</p>
-      <p class="product__description">${this.product.DescriptionHtmlSimple}</p>
+      ${isDiscounted ? `<p class="product__original-price"><s>${formatCurrency(this.product.SuggestedRetailPrice)}</s></p>` : ''}
+      <p class="product__color">${(this.product.Colors && this.product.Colors[0]?.ColorName) || "Standard"}</p>
+      <p class="product__description">${this.product.DescriptionHtmlSimple || ""}</p>
+      <div class="product-detail__quantity">
+        <label>Quantity:</label>
+        <div class="product-qty-control">
+          <button class="qty-btn product-qty-minus" type="button">−</button>
+          <span class="product-qty-display">${this.selectedQuantity}</span>
+          <button class="qty-btn product-qty-plus" type="button">+</button>
+        </div>
+      </div>
       <div class="product-detail__add">
         <button id="addToCart" data-id="${this.product.Id}">Add to Cart</button>
       </div>

@@ -19,6 +19,8 @@ export default class Alert {
           `../json/alerts.json`, // One level up
           `/json/alerts.json`, // Absolute from root
           `../../json/alerts.json`, // Two levels up
+          `src/json/alerts.json`, // Live Server from root
+          `src/public/json/alerts.json`, // Live Server public folder
         ];
 
     for (const path of pathStrategies) {

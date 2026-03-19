@@ -14,11 +14,14 @@
       <img src="/images/noun_Tent_2517.svg" alt="tent image for logo" />
       <a href="index.html"> Sleep<span class="highlight">Outside</span></a>
     </div>
+
+    <!-- ✅ FIXED CART SECTION (your task) -->
     <div class="cart">
       <a href="cart/index.html">
-        <!-- SVG logo here -->
+        <img src="/images/cart.svg" alt="cart icon" class="cart-icon" />
       </a>
     </div>
+
   </header>
 
   <main class="divider">
@@ -64,6 +67,22 @@
       });
     });
   </script>
+
+  <!-- ✅ ADDED: Cart animation script (your task) -->
+  <script>
+    const cartIcon = document.querySelector(".cart-icon");
+
+    if (cartIcon) {
+      cartIcon.addEventListener("click", () => {
+        cartIcon.classList.add("cart-animate");
+
+        setTimeout(() => {
+          cartIcon.classList.remove("cart-animate");
+        }, 500);
+      });
+    }
+  </script>
+
 </body>
 
 </html>

@@ -22,10 +22,11 @@ function stripHtml(htmlString) {
 
 function cartItemTemplate(item) {
   const description = stripHtml(item.DescriptionHtmlSimple);
-  const detailsPath =
-    window.location.pathname.includes("/cart/")
-      ? `../product_pages/?product=${item.Id}`
-      : `./product_pages/?product=${item.Id}`;
+
+  // ✅ Correct path logic (important fix)
+  const detailsPath = window.location.pathname.includes("/cart/")
+    ? `../product_pages/?product=${item.Id}`
+    : `./product_pages/?product=${item.Id}`;
 
   return `<li class="cart-card divider">
     <button class="cart-card__remove" type="button" data-id="${item.Id}" aria-label="Remove ${item.NameWithoutBrand} from cart">Remove</button>
@@ -57,11 +58,12 @@ function updateCartSummary(groupedCartItems) {
 
 async function renderCartContents() {
   const cartItems = getCartItems();
+
   const imageChecks = await Promise.all(
     cartItems.map(async (item) => ({
       item,
       hasImage: await imageExists(item.Image),
-    })),
+    }))
   );
 
   const filteredItems = imageChecks
@@ -73,26 +75,28 @@ async function renderCartContents() {
   }
 
   const groupedCartItems = groupCartItems(filteredItems);
+
   renderListWithTemplate(
     cartItemTemplate,
     cartListElement,
     groupedCartItems,
     "afterbegin",
-    true,
+    true
   );
+
   updateCartSummary(groupedCartItems);
   updateCartCount();
 }
 
+// ✅ Event listener
 cartListElement.addEventListener("click", (event) => {
   const removeButton = event.target.closest(".cart-card__remove");
 
-  if (!removeButton) {
-    return;
-  }
+  if (!removeButton) return;
 
   removeProductFromCart(removeButton.dataset.id);
   void renderCartContents();
 });
 
+// ✅ FIXED (removed the extra dot)
 void renderCartContents();

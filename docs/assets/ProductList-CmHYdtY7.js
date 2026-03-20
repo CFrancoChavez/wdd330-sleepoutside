@@ -1,4 +1,4 @@
-import{i as r,b as n}from"./utils-CvZIbBQW.js";function c(){const e=new URL(import.meta.url).pathname,i=["/src/js/ProductList.mjs","/js/ProductList.mjs","/assets/"];for(const a of i){const s=e.indexOf(a);if(s>=0)return e.slice(0,s)}return""}function l(e){const i=e.FinalPrice<e.SuggestedRetailPrice;return`<li class="product-card">
+import{i as r,b as n}from"./utils-Doi09Ce6.js";function c(){const e=new URL(import.meta.url).pathname,i=["/src/js/ProductList.mjs","/js/ProductList.mjs","/assets/"];for(const a of i){const s=e.indexOf(a);if(s>=0)return e.slice(0,s)}return""}function l(e){const i=e.FinalPrice<e.SuggestedRetailPrice;return`<li class="product-card">
     <a href="${`${c()}/product_pages/index.html?product=${e.Id}`}">
       <img src="${e.Image}" alt="${e.Name}">
       ${i?'<span class="product-card__discount">Sale</span>':""}

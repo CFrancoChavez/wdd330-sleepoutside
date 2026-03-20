@@ -90,7 +90,7 @@ p {
   margin-top: -1.3em;
 }
 
-.logo--square > div {
+.logo--square>div {
   margin-top: -1.7em;
 }
 
@@ -607,6 +607,7 @@ footer {
   padding: 1em;
 }
 
+<<<<<<< HEAD
 /* Category card styles */
 .categories {
   padding: 2em 1em;
@@ -899,3 +900,11 @@ footer {
 .modal-btn--secondary:hover {
   background-color: #d8d8d8;
 }
+=======
+.product-card img {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  object-fit: cover;
+}
+>>>>>>> 47e0d0f4ba78b2ab9bf24397971690018d5d4257

@@ -899,6 +899,8 @@ footer {
 .modal-btn--secondary:hover {
   background-color: #d8d8d8;
 }
+
+/* Product card image styles */
 .product-card img {
   width: 100%;
   height: auto;

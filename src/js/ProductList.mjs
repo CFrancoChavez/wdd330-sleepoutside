@@ -14,17 +14,46 @@ function getSiteBasePath() {
   return "";
 }
 
+// function productCardTemplate(product) {
+//   const isDiscounted = product.FinalPrice < product.SuggestedRetailPrice;
+//   const siteBasePath = getSiteBasePath();
+//   const productPageUrl = `${siteBasePath}/product_pages/index.html?product=${product.Id}`;
+//   return `<li class="product-card">
+//     <a href="${productPageUrl}">
+//       <img src="${product.Image}" alt="${product.Name}">
+//       ${isDiscounted ? '<span class="product-card__discount">Sale</span>' : ''}
+//       <h3 class="card__brand">${product.Brand.Name}</h3>
+//       <h2 class="card__name">${product.NameWithoutBrand}</h2>
+//       <p class="product-card__price">$${product.FinalPrice}</p>
+//     </a>
+//   </li>`;
+// }
 function productCardTemplate(product) {
-  const isDiscounted = product.FinalPrice < product.SuggestedRetailPrice;
+  // 1. Cálculo del descuento (MSRP vs FinalPrice)
+  const retail = product.SuggestedRetailPrice;
+  const final = product.FinalPrice;
+  const savings = retail - final;
+  const isDiscounted = savings > 0.01; // Verificamos si hay descuento real
+  
+  // 2. Calculamos el porcentaje de ahorro
+  const discountPercent = isDiscounted ? Math.round((savings / retail) * 100) : 0;
+
   const siteBasePath = getSiteBasePath();
   const productPageUrl = `${siteBasePath}/product_pages/index.html?product=${product.Id}`;
+
   return `<li class="product-card">
     <a href="${productPageUrl}">
       <img src="${product.Image}" alt="${product.Name}">
-      ${isDiscounted ? '<span class="product-card__discount">Sale</span>' : ''}
+      
+      ${isDiscounted ? `<span class="product-card__discount">-${discountPercent}% OFF</span>` : ''}
+      
       <h3 class="card__brand">${product.Brand.Name}</h3>
       <h2 class="card__name">${product.NameWithoutBrand}</h2>
-      <p class="product-card__price">$${product.FinalPrice}</p>
+      
+      <p class="product-card__price">
+        ${isDiscounted ? `<span class="original-price"><s>$${retail.toFixed(2)}</s></span> ` : ''}
+        $${final.toFixed(2)}
+      </p>
     </a>
   </li>`;
 }

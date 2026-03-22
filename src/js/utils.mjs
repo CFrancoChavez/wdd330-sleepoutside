@@ -82,6 +82,11 @@ export function updateProductQuantity(productId, quantity) {
 }
 
 export function groupCartItems(cartItems) {
+  // VALIDACIÓN CRUCIAL: Si cartItems no existe o no es un array, devolvemos un array vacío
+  if (!Array.isArray(cartItems)) {
+    return [];
+  }
+
   return cartItems.reduce((groups, item) => {
     const existingItem = groups.find((group) => group.Id === item.Id);
 

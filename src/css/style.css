@@ -900,6 +900,59 @@ footer {
   background-color: #d8d8d8;
 }
 
+/* Alert Message Styles */
+.alert {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 0.25rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  color: #721c24;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideDown 0.3s ease-out;
+}
+
+.alert__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.alert__content p {
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.alert__close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #721c24;
+  padding: 0;
+  margin-left: 1rem;
+  line-height: 1;
+}
+
+.alert__close:hover {
+  color: #5a1419;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Checkout Form Styles */
 .checkout-container {
   display: grid;
@@ -918,6 +971,82 @@ footer {
 .checkout-items h2 {
   margin-bottom: 1.5rem;
   color: var(--secondary-color);
+}
+
+/* Success Page Styles */
+.success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  padding: 2rem;
+}
+
+.success-content {
+  text-align: center;
+  max-width: 600px;
+  background: #f0f8f0;
+  padding: 3rem 2rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--secondary-color);
+}
+
+.success-content h1 {
+  color: var(--secondary-color);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  font-size: 1.2rem;
+  color: #2d5a2d;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.success-details {
+  margin: 2rem 0;
+  color: var(--dark-grey);
+}
+
+.success-details p {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  line-height: 1.6;
+}
+
+.success-actions {
+  margin-top: 2rem;
+}
+
+.success-actions .button-link {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: var(--dark-grey);
+  padding: 0.75rem 2rem;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.success-actions .button-link:hover {
+  background-color: var(--tertiary-color);
+  color: white;
+}
+
+@media (max-width: 900px) {
+  .success-content {
+    padding: 2rem 1rem;
+  }
+
+  .success-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .success-message {
+    font-size: 1rem;
+  }
 }
 
 .checkout-form-container {

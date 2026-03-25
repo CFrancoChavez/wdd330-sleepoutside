@@ -106,11 +106,19 @@ export default class CheckoutProcess {
         "https://wdd330-sleepoutside-0tyl.onrender.com/checkout",
         options
       );
+      
+      // Check for both network errors and server errors
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw { name: 'servicesError', message: errorData };
+      }
+      
       const result = await response.json();
       console.log("Server response:", result);
       return result;
     } catch (error) {
       console.error("Error sending order to server:", error);
+      // Re-throw the error so it can be caught by the calling code
       throw error;
     }
   }

@@ -1,4 +1,4 @@
-import { loadHeaderFooter, updateCartCount, getCartItems, formatCurrency } from "./utils.mjs";
+import { loadHeaderFooter, updateCartCount, getCartItems, formatCurrency, alertMessage } from "./utils.mjs";
 import CheckoutProcess from "./CheckoutProcess.mjs";
 
 await loadHeaderFooter();
@@ -69,10 +69,19 @@ function updateOrderSummary() {
 
 updateOrderSummary();
 
-// Handle form submission
+// Handle form submission with validation
 if (checkoutForm) {
-  checkoutForm.addEventListener("submit", async (e) => {
+  checkoutForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    
+    // Check form validity
+    const isValid = checkoutForm.checkValidity();
+    checkoutForm.reportValidity();
+    
+    if (!isValid) {
+      alertMessage("Please fill in all required fields correctly.", true);
+      return;
+    }
     
     try {
       // Show confirmation modal
@@ -82,6 +91,7 @@ if (checkoutForm) {
       }
     } catch (error) {
       console.error("Error during checkout:", error);
+      alertMessage("An error occurred. Please try again.", true);
     }
   });
 }
@@ -106,14 +116,28 @@ if (confirmCheckoutBtn) {
         confirmModal.hidden = true;
       }
       
-      // Show success modal
-      const successModal = document.querySelector("#success-order-modal");
-      if (successModal) {
-        successModal.hidden = false;
-      }
+      // Redirect to success page
+      window.location.href = "./success.html";
     } catch (error) {
       console.error("Error placing order:", error);
-      alert("There was an error placing your order. Please try again.");
+      
+      // Hide confirmation modal
+      const confirmModal = document.querySelector("#confirm-order-modal");
+      if (confirmModal) {
+        confirmModal.hidden = true;
+      }
+      
+      // Show error message
+      let errorMessage = "There was an error placing your order. Please try again.";
+      if (error && error.message) {
+        if (typeof error.message === 'object') {
+          errorMessage = JSON.stringify(error.message);
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      alertMessage(errorMessage, true);
     }
   });
 }

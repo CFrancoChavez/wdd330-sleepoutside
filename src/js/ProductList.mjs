@@ -55,6 +55,7 @@ function productCardTemplate(product) {
         $${final.toFixed(2)}
       </p>
     </a>
+    <button class="quick-view-btn" data-product-id="${product.Id}">Quick View</button>
   </li>`;
 }
 

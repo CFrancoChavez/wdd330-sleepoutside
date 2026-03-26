@@ -7,16 +7,26 @@ export default class QuickView {
     this.modal = document.getElementById(modalId);
     this.isLoading = false;
     this.hoverTimeout = null;
+    
+    // Log if modal is not found
+    if (!this.modal) {
+      console.warn(`QuickView: Modal with id "${modalId}" not found. Quick view will not work.`);
+    }
   }
 
   init() {
-    // Set up event delegation for product card hovers using mouseover/mouseout (which bubble)
+    // Only initialize if modal exists
+    if (!this.modal) {
+      console.error("QuickView: Cannot initialize without modal element");
+      return;
+    }
+
+    // Set up event delegation for product card hovers
     document.addEventListener("mouseover", (e) => {
       const productCard = e.target.closest(".product-card");
       if (productCard && !this.isLoading) {
         const productId = productCard.getAttribute("data-product-id");
         if (productId) {
-          // Add a small delay before opening to prevent accidental opens
           this.hoverTimeout = setTimeout(() => {
             this.openQuickView(productId);
           }, 300);
@@ -24,12 +34,11 @@ export default class QuickView {
       }
     });
 
-    // Close when mouse leaves the card using mouseout (which bubbles)
+    // Close when mouse leaves the card
     document.addEventListener("mouseout", (e) => {
       const productCard = e.target.closest(".product-card");
       if (productCard) {
         clearTimeout(this.hoverTimeout);
-        // Add a small delay before closing to allow moving to modal
         setTimeout(() => {
           if (this.modal && !this.modal.matches(":hover")) {
             this.closeQuickView();
@@ -39,34 +48,30 @@ export default class QuickView {
     });
 
     // Keep modal open while hovering over it
-    if (this.modal) {
-      this.modal.addEventListener("mouseenter", () => {
-        clearTimeout(this.hoverTimeout);
-      });
+    this.modal.addEventListener("mouseenter", () => {
+      clearTimeout(this.hoverTimeout);
+    });
 
-      this.modal.addEventListener("mouseleave", () => {
-        this.closeQuickView();
-      });
-    }
+    this.modal.addEventListener("mouseleave", () => {
+      this.closeQuickView();
+    });
 
     // Set up close button functionality
-    const closeBtn = this.modal?.querySelector(".modal__close");
+    const closeBtn = this.modal.querySelector(".modal__close");
     if (closeBtn) {
       closeBtn.addEventListener("click", () => this.closeQuickView());
     }
 
     // Close modal when clicking outside of modal content
-    if (this.modal) {
-      this.modal.addEventListener("click", (e) => {
-        if (e.target === this.modal) {
-          this.closeQuickView();
-        }
-      });
-    }
+    this.modal.addEventListener("click", (e) => {
+      if (e.target === this.modal) {
+        this.closeQuickView();
+      }
+    });
 
     // Close modal with Escape key
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && this.modal && !this.modal.hidden) {
+      if (e.key === "Escape" && !this.modal.hidden) {
         this.closeQuickView();
       }
     });

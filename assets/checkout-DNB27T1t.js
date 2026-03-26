@@ -1,1 +1,2 @@
-import{u as t}from"./utils-CKV632yh.js";t();
+import { u as t } from "./utils-CKV632yh.js";
+t();

@@ -133,7 +133,7 @@ export default class QuickView {
             </div>
             <div class="quick-view__info-item">
               <strong>Description:</strong>
-              <p>${product.Description || "No description available"}</p>
+              <p>${product.DescriptionHtmlSimple || product.Description || "No description available"}</p>
             </div>
           </div>
 

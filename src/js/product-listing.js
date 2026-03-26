@@ -18,7 +18,7 @@ if (!category) {
   myList.init();
 
   // Initialize Quick View modal
-  const quickView = new QuickView(dataSource);
+  const quickView = new QuickView(dataSource, "quick-view-modal", category);
   quickView.init();
 
   // Update page title

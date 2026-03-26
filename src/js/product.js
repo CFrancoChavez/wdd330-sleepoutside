@@ -12,7 +12,7 @@ const dataSource = new ExternalServices(categoryParam);
 const product = new ProductDetails(productId, dataSource);
 
 // Initialize Quick View modal
-const quickView = new QuickView(dataSource);
+const quickView = new QuickView(dataSource, "quick-view-modal", categoryParam);
 quickView.init();
 
 // Update breadcrumb link to go back to the correct category

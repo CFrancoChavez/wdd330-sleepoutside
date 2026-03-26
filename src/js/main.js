@@ -15,7 +15,7 @@ void alertList.init();
 await productList.init();
 
 // Initialize Quick View for homepage products
-const quickView = new QuickView(dataSource);
+const quickView = new QuickView(dataSource, "quick-view-modal", "tents");
 quickView.init();
 
 updateCartCount();

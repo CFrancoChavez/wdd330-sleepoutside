@@ -1,13 +1,14 @@
 import { formatCurrency } from "./utils.mjs";
 
 export default class QuickView {
-  constructor(dataSource, modalId = "quick-view-modal") {
+  constructor(dataSource, modalId = "quick-view-modal", category = "tents") {
     this.dataSource = dataSource;
     this.modalId = modalId;
     this.modal = document.getElementById(modalId);
     this.isLoading = false;
     this.isOpen = false;
     this.hoverTimeout = null;
+    this.category = category;
     
     if (!this.modal) {
       console.warn(`QuickView: Modal with id "${modalId}" not found. Quick view will not work.`);
@@ -136,7 +137,7 @@ export default class QuickView {
             </div>
           </div>
 
-          <a href="?product=${product.Id}" class="button-link quick-view__view-details">View Full Details</a>
+          <a href="../../product_pages/index.html?product=${product.Id}&category=${this.category}" class="button-link quick-view__view-details">View Full Details</a>
         </div>
       </div>
     `;

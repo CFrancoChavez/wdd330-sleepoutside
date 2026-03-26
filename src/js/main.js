@@ -1,5 +1,6 @@
 import ExternalServices from "./ExternalServices.mjs";
 import ProductList from "./ProductList.mjs";
+import QuickView from "./QuickView.mjs";
 import Alert from "./Alert.js";
 import { loadHeaderFooter, updateCartCount } from "./utils.mjs";
 
@@ -11,5 +12,10 @@ const productList = new ProductList("tents", dataSource, listElement, 4); // Lim
 const alertList = new Alert();
 
 void alertList.init();
-productList.init();
+await productList.init();
+
+// Initialize Quick View for homepage products
+const quickView = new QuickView(dataSource);
+quickView.init();
+
 updateCartCount();

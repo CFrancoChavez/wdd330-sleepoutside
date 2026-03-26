@@ -7,8 +7,7 @@ export default class QuickView {
     this.modal = document.getElementById(modalId);
     this.isLoading = false;
     this.isOpen = false;
-    this.openTimeout = null;
-    this.closeTimeout = null;
+    this.hoverTimeout = null;
     
     if (!this.modal) {
       console.warn(`QuickView: Modal with id "${modalId}" not found. Quick view will not work.`);
@@ -21,49 +20,32 @@ export default class QuickView {
       return;
     }
 
-    console.log("QuickView: Initialization successful");
-
-    // Open modal on product card hover
+    // Open modal after 2 seconds of hovering on a product card
     document.addEventListener("mouseenter", (e) => {
       const productCard = e.target.closest(".product-card");
-      if (productCard && !this.isLoading) {
+      if (productCard && !this.isLoading && !this.isOpen) {
         const productId = productCard.getAttribute("data-product-id");
         if (productId) {
-          // Clear any pending close
-          clearTimeout(this.closeTimeout);
+          // Clear any existing timeout
+          clearTimeout(this.hoverTimeout);
           
-          // Open immediately with minimal delay
-          if (!this.isOpen) {
-            clearTimeout(this.openTimeout);
-            this.openTimeout = setTimeout(() => {
-              this.openQuickView(productId);
-            }, 50);
-          }
+          // Open after 2 seconds
+          this.hoverTimeout = setTimeout(() => {
+            this.openQuickView(productId);
+          }, 2000);
         }
       }
     }, true);
 
-    // Close modal when leaving card or modal
+    // Cancel timeout if mouse leaves the card before 2 seconds
     document.addEventListener("mouseleave", (e) => {
       const productCard = e.target.closest(".product-card");
-      const isModal = e.target.closest("#quick-view-modal");
-      
-      if ((productCard || isModal) && this.isOpen) {
-        clearTimeout(this.openTimeout);
-        // Grace period before closing to allow cursor movement
-        this.closeTimeout = setTimeout(() => {
-          this.closeQuickView();
-        }, 200);
+      if (productCard) {
+        clearTimeout(this.hoverTimeout);
       }
     }, true);
 
-    // Cancel close timeout if coming back to card/modal
-    this.modal.addEventListener("mouseenter", () => {
-      clearTimeout(this.closeTimeout);
-      clearTimeout(this.openTimeout);
-    });
-
-    // Close when clicking overlay
+    // Close when clicking on overlay
     const overlay = this.modal.querySelector(".modal__overlay");
     if (overlay) {
       overlay.addEventListener("click", () => {
@@ -171,8 +153,7 @@ export default class QuickView {
     if (this.modal && this.isOpen) {
       this.modal.hidden = true;
       this.isOpen = false;
-      clearTimeout(this.openTimeout);
-      clearTimeout(this.closeTimeout);
+      clearTimeout(this.hoverTimeout);
     }
   }
 }

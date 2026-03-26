@@ -6,18 +6,46 @@ export default class QuickView {
     this.modalId = modalId;
     this.modal = document.getElementById(modalId);
     this.isLoading = false;
+    this.hoverTimeout = null;
   }
 
   init() {
-    // Set up event delegation for Quick View buttons
-    document.addEventListener("click", (e) => {
-      const quickViewBtn = e.target.closest(".quick-view-btn");
-      if (quickViewBtn) {
-        e.preventDefault();
-        const productId = quickViewBtn.getAttribute("data-product-id");
-        this.openQuickView(productId);
+    // Set up event delegation for product card hovers
+    document.addEventListener("mouseenter", (e) => {
+      const productCard = e.target.closest(".product-card");
+      if (productCard) {
+        const productId = productCard.getAttribute("data-product-id");
+        // Add a small delay before opening to prevent accidental opens
+        this.hoverTimeout = setTimeout(() => {
+          this.openQuickView(productId);
+        }, 300);
       }
-    });
+    }, true);
+
+    // Close when mouse leaves the card
+    document.addEventListener("mouseleave", (e) => {
+      const productCard = e.target.closest(".product-card");
+      if (productCard) {
+        clearTimeout(this.hoverTimeout);
+        // Add a small delay before closing to allow moving to modal
+        setTimeout(() => {
+          if (this.modal && !this.modal.matches(":hover")) {
+            this.closeQuickView();
+          }
+        }, 200);
+      }
+    }, true);
+
+    // Keep modal open while hovering over it
+    if (this.modal) {
+      this.modal.addEventListener("mouseenter", () => {
+        clearTimeout(this.hoverTimeout);
+      });
+
+      this.modal.addEventListener("mouseleave", () => {
+        this.closeQuickView();
+      });
+    }
 
     // Set up close button functionality
     const closeBtn = this.modal?.querySelector(".modal__close");
@@ -130,5 +158,6 @@ export default class QuickView {
     if (this.modal) {
       this.modal.hidden = true;
     }
+    clearTimeout(this.hoverTimeout);
   }
 }

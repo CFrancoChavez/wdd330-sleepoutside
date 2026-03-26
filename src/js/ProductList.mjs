@@ -41,7 +41,7 @@ function productCardTemplate(product) {
   const siteBasePath = getSiteBasePath();
   const productPageUrl = `${siteBasePath}/product_pages/index.html?product=${product.Id}`;
 
-  return `<li class="product-card">
+  return `<li class="product-card" data-product-id="${product.Id}">
     <a href="${productPageUrl}">
       <img src="${product.Image}" alt="${product.Name}">
       
@@ -55,7 +55,6 @@ function productCardTemplate(product) {
         $${final.toFixed(2)}
       </p>
     </a>
-    <button class="quick-view-btn" data-product-id="${product.Id}">Quick View</button>
   </li>`;
 }
 

@@ -10,20 +10,22 @@ export default class QuickView {
   }
 
   init() {
-    // Set up event delegation for product card hovers
-    document.addEventListener("mouseenter", (e) => {
+    // Set up event delegation for product card hovers using mouseover/mouseout (which bubble)
+    document.addEventListener("mouseover", (e) => {
       const productCard = e.target.closest(".product-card");
-      if (productCard) {
+      if (productCard && !this.isLoading) {
         const productId = productCard.getAttribute("data-product-id");
-        // Add a small delay before opening to prevent accidental opens
-        this.hoverTimeout = setTimeout(() => {
-          this.openQuickView(productId);
-        }, 300);
+        if (productId) {
+          // Add a small delay before opening to prevent accidental opens
+          this.hoverTimeout = setTimeout(() => {
+            this.openQuickView(productId);
+          }, 300);
+        }
       }
-    }, true);
+    });
 
-    // Close when mouse leaves the card
-    document.addEventListener("mouseleave", (e) => {
+    // Close when mouse leaves the card using mouseout (which bubbles)
+    document.addEventListener("mouseout", (e) => {
       const productCard = e.target.closest(".product-card");
       if (productCard) {
         clearTimeout(this.hoverTimeout);
@@ -34,7 +36,7 @@ export default class QuickView {
           }
         }, 200);
       }
-    }, true);
+    });
 
     // Keep modal open while hovering over it
     if (this.modal) {

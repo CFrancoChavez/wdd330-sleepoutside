@@ -1,3 +1,13 @@
+function getBaseURL() {
+  // Handle cases where import.meta.env is not available
+  if (import.meta?.env?.VITE_SERVER_URL) {
+    return import.meta.env.VITE_SERVER_URL;
+  }
+  // Fallback for development/testing
+  console.warn('VITE_SERVER_URL not configured. Using fallback.');
+  return 'https://wdd330-backend.onrender.com/';
+}
+
 function convertToJson(res) {
   if (res.ok) {
     return res.json();
@@ -6,39 +16,16 @@ function convertToJson(res) {
   }
 }
 
-function getProjectRootFromDataUrl(dataUrl) {
-  const { pathname } = new URL(dataUrl);
-  const knownMarkers = ["/src/json/", "/json/"];
-
-  for (const marker of knownMarkers) {
-    const markerIndex = pathname.indexOf(marker);
-    if (markerIndex >= 0) {
-      return pathname.slice(0, markerIndex);
-    }
+function normalizeProductImages(product) {
+  // API returns images in different structure: Images.PrimaryMedium and Images.PrimaryLarge
+  // Map to simple Image property for compatibility with existing code
+  if (product.Images?.PrimaryMedium) {
+    product.Image = product.Images.PrimaryMedium;
   }
-
-  return "";
-}
-
-function normalizeAssetPath(path, projectRoot) {
-  if (!path || !path.startsWith("/")) {
-    return path;
+  if (product.Images?.PrimaryLarge) {
+    product.ImageLarge = product.Images.PrimaryLarge;
   }
-
-  return `${projectRoot}${path}`;
-}
-
-function normalizeProductAssets(products, sourceUrl) {
-  const projectRoot = getProjectRootFromDataUrl(sourceUrl);
-
-  return products.map((product) => ({
-    ...product,
-    Image: normalizeAssetPath(product.Image, projectRoot),
-    Brand: {
-      ...product.Brand,
-      LogoSrc: normalizeAssetPath(product.Brand?.LogoSrc, projectRoot),
-    },
-  }));
+  return product;
 }
 
 export default class ProductData {
@@ -47,31 +34,41 @@ export default class ProductData {
   }
 
   async getData() {
-    // Try multiple path strategies to handle different server layouts
-    const pathStrategies = [
-      `./json/${this.category}.json`,      // Same directory level
-      `../json/${this.category}.json`,     // One level up
-      `/json/${this.category}.json`,       // Absolute from root
-      `../../json/${this.category}.json`,  // Two levels up
-    ];
-
-    for (const path of pathStrategies) {
-      try {
-        const response = await fetch(path);
-        if (response.ok) {
-          const products = await response.json();
-          return normalizeProductAssets(products, response.url);
-        }
-      } catch (e) {
-        // Continue to next strategy
-      }
+    try {
+      const baseURL = getBaseURL();
+      const response = await fetch(
+        `${baseURL}products/search/${this.category}`
+      );
+      const data = await convertToJson(response);
+      
+      // API returns products in data.Result
+      const products = data.Result || [];
+      
+      // Normalize image paths for new API structure
+      return products.map(normalizeProductImages);
+    } catch (e) {
+      console.error(`Error loading products for category ${this.category}:`, e);
+      throw new Error(`Bad Response: Could not load products for ${this.category}`);
     }
-    
-    // If all paths fail, throw error with details
-    throw new Error(`Bad Response: Could not load ${this.category}.json from any path: ${pathStrategies.join(', ')}`);
   }
+
   async findProductById(id) {
-    const products = await this.getData();
-    return products.find((item) => item.Id === id);
+    try {
+      const baseURL = getBaseURL();
+      const response = await fetch(`${baseURL}product/${id}`);
+      const data = await convertToJson(response);
+      
+      // API returns single product in data.Result
+      const product = data.Result;
+      
+      if (!product) {
+        throw new Error("Product not found");
+      }
+      
+      return normalizeProductImages(product);
+    } catch (e) {
+      console.error(`Error loading product ${id}:`, e);
+      throw new Error(`Bad Response: Could not load product ${id}`);
+    }
   }
 }

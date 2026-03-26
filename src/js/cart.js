@@ -2,10 +2,9 @@ import {
   formatCurrency,
   getCartItems,
   groupCartItems,
-  imageExists,
+  loadHeaderFooter,
   removeProductFromCart,
   renderListWithTemplate,
-  setLocalStorage,
   updateCartCount,
 } from "./utils.mjs";
 
@@ -29,23 +28,23 @@ function cartItemTemplate(item) {
     : `./product_pages/?product=${item.Id}`;
 
   return `<li class="cart-card divider">
-    <button class="cart-card__remove" type="button" data-id="${item.Id}" aria-label="Remove ${item.NameWithoutBrand} from cart">Remove</button>
     <a href="${detailsPath}" class="cart-card__image">
       <img src="${item.Image}" alt="${item.Name}" />
     </a>
     <div class="cart-card__details">
-      <p class="cart-card__brand">${item.Brand.Name}</p>
       <a href="${detailsPath}" class="cart-card__name-link">
         <h3 class="card__name">${item.NameWithoutBrand}</h3>
       </a>
+      <p class="cart-card__brand">${item.Brand.Name}</p>
       <p class="cart-card__description">${description}</p>
       <p class="cart-card__color">Color: ${item.Colors[0].ColorName}</p>
-      <p class="cart-card__quantity">Quantity: ${item.quantity}</p>
     </div>
     <div class="cart-card__pricing">
       <p class="cart-card__price-each">${formatCurrency(item.FinalPrice)} each</p>
+      <p class="cart-card__quantity-display">Qty: ${item.quantity}</p>
       <p class="cart-card__price">${formatCurrency(item.lineTotal)}</p>
     </div>
+    <button class="cart-card__remove" type="button" data-id="${item.Id}" aria-label="Remove ${item.NameWithoutBrand} from cart">Remove</button>
   </li>`;
 }
 
@@ -54,6 +53,21 @@ function updateCartSummary(groupedCartItems) {
   cartTotalElement.textContent = formatCurrency(total);
   cartFooterElement.hidden = groupedCartItems.length === 0;
   cartEmptyElement.hidden = groupedCartItems.length !== 0;
+  
+  // Disable checkout button if cart is empty
+  const checkoutLink = cartFooterElement?.querySelector("a.button-link");
+  if (checkoutLink) {
+    if (groupedCartItems.length === 0) {
+      checkoutLink.classList.add("disabled");
+      checkoutLink.style.cursor = "not-allowed";
+      checkoutLink.setAttribute("aria-disabled", "true");
+      checkoutLink.addEventListener("click", (e) => e.preventDefault(), true);
+    } else {
+      checkoutLink.classList.remove("disabled");
+      checkoutLink.style.cursor = "pointer";
+      checkoutLink.removeAttribute("aria-disabled");
+    }
+  }
 }
 
 async function renderCartContents() {
@@ -99,4 +113,12 @@ cartListElement.addEventListener("click", (event) => {
 });
 
 // ✅ FIXED (removed the extra dot)
+void renderCartContents();
+  if (removeButton) {
+    removeProductFromCart(removeButton.dataset.id);
+    void renderCartContents();
+  }
+});
+
+await loadHeaderFooter();
 void renderCartContents();

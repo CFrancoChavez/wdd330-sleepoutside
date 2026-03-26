@@ -21,12 +21,15 @@ export default class QuickView {
       return;
     }
 
+    console.log("QuickView: Initialization successful", this.modalId);
+
     // Set up event delegation for product card hovers
     document.addEventListener("mouseover", (e) => {
       const productCard = e.target.closest(".product-card");
       if (productCard && !this.isLoading) {
         const productId = productCard.getAttribute("data-product-id");
         if (productId) {
+          console.log("QuickView: Product card hovered, ID:", productId);
           this.hoverTimeout = setTimeout(() => {
             this.openQuickView(productId);
           }, 300);
@@ -38,9 +41,11 @@ export default class QuickView {
     document.addEventListener("mouseout", (e) => {
       const productCard = e.target.closest(".product-card");
       if (productCard) {
+        console.log("QuickView: Mouse left product card");
         clearTimeout(this.hoverTimeout);
         setTimeout(() => {
           if (this.modal && !this.modal.matches(":hover")) {
+            console.log("QuickView: Closing modal");
             this.closeQuickView();
           }
         }, 200);
@@ -49,10 +54,12 @@ export default class QuickView {
 
     // Keep modal open while hovering over it
     this.modal.addEventListener("mouseenter", () => {
+      console.log("QuickView: Modal hovered, keeping open");
       clearTimeout(this.hoverTimeout);
     });
 
     this.modal.addEventListener("mouseleave", () => {
+      console.log("QuickView: Mouse left modal");
       this.closeQuickView();
     });
 
@@ -78,26 +85,35 @@ export default class QuickView {
   }
 
   async openQuickView(productId) {
-    if (this.isLoading || !this.modal) return;
+    if (this.isLoading || !this.modal) {
+      console.log("QuickView: Cannot open - loading:", this.isLoading, "modal exists:", !!this.modal);
+      return;
+    }
 
     try {
       this.isLoading = true;
+      console.log("QuickView: Opening modal for product ID:", productId);
 
       // Show modal in loading state
       this.modal.hidden = false;
+      console.log("QuickView: Modal hidden attribute:", this.modal.hidden);
+      
       const modalContent = this.modal.querySelector(".modal__content");
       if (modalContent) {
         modalContent.innerHTML = '<p class="quick-view__loading">Loading product details...</p>';
+        console.log("QuickView: Loading content displayed");
       }
 
       // Fetch product details
       const product = await this.dataSource.findProductById(productId);
 
       if (!product) {
+        console.log("QuickView: Product not found");
         this.displayError("Product not found");
         return;
       }
 
+      console.log("QuickView: Product loaded successfully", product.Name);
       // Display product in modal
       this.displayProduct(product);
     } catch (error) {
@@ -110,7 +126,12 @@ export default class QuickView {
 
   displayProduct(product) {
     const modalContent = this.modal?.querySelector(".modal__content");
-    if (!modalContent) return;
+    if (!modalContent) {
+      console.log("QuickView: Modal content element not found");
+      return;
+    }
+
+    console.log("QuickView: Displaying product", product.Name);
 
     // Calculate discount if applicable
     const retail = product.SuggestedRetailPrice || product.FinalPrice;
@@ -162,8 +183,10 @@ export default class QuickView {
   }
 
   closeQuickView() {
+    console.log("QuickView: Closing modal");
     if (this.modal) {
       this.modal.hidden = true;
+      console.log("QuickView: Modal hidden");
     }
     clearTimeout(this.hoverTimeout);
   }

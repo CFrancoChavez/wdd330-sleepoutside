@@ -23,7 +23,6 @@ function stripHtml(htmlString) {
 function cartItemTemplate(item) {
   const description = stripHtml(item.DescriptionHtmlSimple);
 
-  // ✅ Correct path logic (important fix)
   const detailsPath = window.location.pathname.includes("/cart/")
     ? `../product_pages/?product=${item.Id}`
     : `./product_pages/?product=${item.Id}`;
@@ -88,15 +87,15 @@ async function renderCartContents() {
   updateCartCount();
 }
 
-// ✅ Event listener
+// ✅ Event listener (FIXED)
 cartListElement.addEventListener("click", (event) => {
   const removeButton = event.target.closest(".cart-card__remove");
 
   if (!removeButton) return;
 
   removeProductFromCart(removeButton.dataset.id);
-  void renderCartContents();
+  renderCartContents(); // ✅ FIXED
 });
 
-// ✅ FIXED (removed the extra dot)
-void renderCartContents();
+// ✅ Initial render (FIXED)
+renderCartContents();

@@ -29,10 +29,10 @@ export default class QuickView {
           // Clear any existing timeout
           clearTimeout(this.hoverTimeout);
           
-          // Open after 2 seconds
+          // Open after 1 second
           this.hoverTimeout = setTimeout(() => {
             this.openQuickView(productId);
-          }, 2000);
+          }, 1000);
         }
       }
     }, true);

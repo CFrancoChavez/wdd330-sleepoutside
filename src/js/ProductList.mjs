@@ -28,7 +28,7 @@ function getSiteBasePath() {
 //     </a>
 //   </li>`;
 // }
-function productCardTemplate(product) {
+function productCardTemplate(product, category) {
   // 1. Cálculo del descuento (MSRP vs FinalPrice)
   const retail = product.SuggestedRetailPrice;
   const final = product.FinalPrice;
@@ -39,7 +39,7 @@ function productCardTemplate(product) {
   const discountPercent = isDiscounted ? Math.round((savings / retail) * 100) : 0;
 
   const siteBasePath = getSiteBasePath();
-  const productPageUrl = `${siteBasePath}/product_pages/index.html?product=${product.Id}`;
+  const productPageUrl = `${siteBasePath}/product_pages/index.html?product=${product.Id}&category=${category}`;
 
   return `<li class="product-card" data-product-id="${product.Id}">
     <a href="${productPageUrl}">
@@ -91,7 +91,9 @@ export default class ProductList {
       ? list.slice(0, this.limit) 
       : list;
     
-    renderListWithTemplate(productCardTemplate, this.listElement, displayList, "afterbegin", true);
+    // Create a wrapper template function that includes the category
+    const templateWithCategory = (product) => productCardTemplate(product, this.category);
+    renderListWithTemplate(templateWithCategory, this.listElement, displayList, "afterbegin", true);
 
     // Remove any existing "More Products" button
     const existingBtn = this.listElement.parentElement?.querySelector(".more-products-btn");

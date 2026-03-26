@@ -1,6 +1,7 @@
 import { getParam, loadHeaderFooter } from "./utils.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 import ProductDetails from "./ProductDetails.mjs";
+import QuickView from "./QuickView.mjs";
 
 await loadHeaderFooter();
 
@@ -9,6 +10,10 @@ const categoryParam = getParam("category") || "tents";
 const dataSource = new ExternalServices(categoryParam);
 
 const product = new ProductDetails(productId, dataSource);
+
+// Initialize Quick View modal
+const quickView = new QuickView(dataSource);
+quickView.init();
 
 // Update breadcrumb link to go back to the correct category
 const breadcrumbBack = document.querySelector("#breadcrumb-back");

@@ -1102,29 +1102,6 @@ footer {
   animation: modalSlideIn 0.3s ease-out;
 }
 
-#quick-view-modal .modal__close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  color: var(--dark-grey);
-  z-index: 10;
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s ease;
-}
-
-#quick-view-modal .modal__close:hover {
-  background-color: var(--light-grey);
-}
-
 #quick-view-modal .modal__content {
   padding: 2rem 1.5rem;
   padding-top: 1.5rem;

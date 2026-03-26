@@ -826,7 +826,8 @@ footer {
 }
 
 /* Order confirmation modal */
-.modal {
+#confirm-order-modal,
+#success-order-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -1054,7 +1055,7 @@ footer {
 }
 
 /* Quick View Modal Styles */
-.modal {
+#quick-view-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -1068,7 +1069,7 @@ footer {
   overflow-y: auto;
 }
 
-.modal__overlay {
+#quick-view-modal .modal__overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -1078,7 +1079,7 @@ footer {
   z-index: -1;
 }
 
-.modal__container {
+#quick-view-modal .modal__container {
   position: relative;
   background: white;
   border-radius: 0.5rem;
@@ -1090,7 +1091,7 @@ footer {
   animation: modalSlideIn 0.3s ease-out;
 }
 
-.modal__close {
+#quick-view-modal .modal__close {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -1109,52 +1110,52 @@ footer {
   transition: background-color 0.2s ease;
 }
 
-.modal__close:hover {
+#quick-view-modal .modal__close:hover {
   background-color: var(--light-grey);
 }
 
-.modal__content {
+#quick-view-modal .modal__content {
   padding: 2rem 1.5rem;
   padding-top: 1.5rem;
 }
 
 /* Quick View Container */
-.quick-view__container {
+#quick-view-modal .quick-view__container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   align-items: start;
 }
 
-.quick-view__image-section {
+#quick-view-modal .quick-view__image-section {
   position: relative;
 }
 
-.quick-view__image {
+#quick-view-modal .quick-view__image {
   width: 100%;
   max-width: 400px;
   height: auto;
   border-radius: 0.25rem;
 }
 
-.quick-view__details-section {
+#quick-view-modal .quick-view__details-section {
   padding: 1rem 0;
 }
 
-.quick-view__brand {
+#quick-view-modal .quick-view__brand {
   color: var(--secondary-color);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
-.quick-view__name {
+#quick-view-modal .quick-view__name {
   font-size: 1.5rem;
   color: var(--dark-grey);
   margin-bottom: 1rem;
   font-family: var(--font-headline);
 }
 
-.quick-view__price {
+#quick-view-modal .quick-view__price {
   display: flex;
   gap: 0.5rem;
   align-items: center;
@@ -1162,37 +1163,37 @@ footer {
   margin-bottom: 1.5rem;
 }
 
-.quick-view__original-price {
+#quick-view-modal .quick-view__original-price {
   color: #999;
   font-size: 1rem;
 }
 
-.quick-view__final-price {
+#quick-view-modal .quick-view__final-price {
   color: var(--tertiary-color);
   font-weight: 600;
 }
 
-.quick-view__info {
+#quick-view-modal .quick-view__info {
   margin-bottom: 1.5rem;
 }
 
-.quick-view__info-item {
+#quick-view-modal .quick-view__info-item {
   margin-bottom: 1rem;
 }
 
-.quick-view__info-item strong {
+#quick-view-modal .quick-view__info-item strong {
   display: block;
   color: var(--secondary-color);
   margin-bottom: 0.25rem;
 }
 
-.quick-view__info-item p {
+#quick-view-modal .quick-view__info-item p {
   color: var(--dark-grey);
   padding: 0.5rem 0;
   margin: 0;
 }
 
-.quick-view__view-details {
+#quick-view-modal .quick-view__view-details {
   display: inline-block;
   background-color: var(--primary-color);
   color: var(--dark-grey);
@@ -1207,19 +1208,19 @@ footer {
   text-align: center;
 }
 
-.quick-view__view-details:hover {
+#quick-view-modal .quick-view__view-details:hover {
   background-color: var(--tertiary-color);
   color: white;
 }
 
-.quick-view__loading {
+#quick-view-modal .quick-view__loading {
   text-align: center;
   color: var(--dark-grey);
   padding: 2rem;
   font-size: 1.1rem;
 }
 
-.quick-view__error {
+#quick-view-modal .quick-view__error {
   text-align: center;
   color: #c33;
   padding: 2rem;
@@ -1239,7 +1240,7 @@ footer {
 
 /* Responsive Design */
 @media (max-width: 700px) {
-  .quick-view__container {
+  #quick-view-modal .quick-view__container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }

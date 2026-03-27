@@ -6,6 +6,8 @@ import {
   removeProductFromCart,
   renderListWithTemplate,
   updateCartCount,
+  imageExists,          // ✅ FIXED
+  setLocalStorage       // ✅ FIXED
 } from "./utils.mjs";
 
 const cartListElement = document.querySelector(".cart-list");
@@ -21,6 +23,7 @@ function stripHtml(htmlString) {
 
 function cartItemTemplate(item) {
   const description = stripHtml(item.DescriptionHtmlSimple);
+
   const detailsPath = window.location.pathname.includes("/cart/")
     ? `../product_pages/?product=${item.Id}`
     : `./product_pages/?product=${item.Id}`;
@@ -51,47 +54,50 @@ function updateCartSummary(groupedCartItems) {
   cartTotalElement.textContent = formatCurrency(total);
   cartFooterElement.hidden = groupedCartItems.length === 0;
   cartEmptyElement.hidden = groupedCartItems.length !== 0;
-  
-  // Disable checkout button if cart is empty
-  const checkoutLink = cartFooterElement?.querySelector("a.button-link");
-  if (checkoutLink) {
-    if (groupedCartItems.length === 0) {
-      checkoutLink.classList.add("disabled");
-      checkoutLink.style.cursor = "not-allowed";
-      checkoutLink.setAttribute("aria-disabled", "true");
-      checkoutLink.addEventListener("click", (e) => e.preventDefault(), true);
-    } else {
-      checkoutLink.classList.remove("disabled");
-      checkoutLink.style.cursor = "pointer";
-      checkoutLink.removeAttribute("aria-disabled");
-    }
-  }
 }
 
 async function renderCartContents() {
   const cartItems = getCartItems();
-  
-  // Don't filter items by image - just use all cart items
-  const groupedCartItems = groupCartItems(cartItems);
+
+  const imageChecks = await Promise.all(
+    cartItems.map(async (item) => ({
+      item,
+      hasImage: await imageExists(item.Image),
+    }))
+  );
+
+  const filteredItems = imageChecks
+    .filter((result) => result.hasImage)
+    .map((result) => result.item);
+
+  if (filteredItems.length !== cartItems.length) {
+    setLocalStorage("so-cart", filteredItems);
+  }
+
+  const groupedCartItems = groupCartItems(filteredItems);
+
   renderListWithTemplate(
     cartItemTemplate,
     cartListElement,
     groupedCartItems,
     "afterbegin",
-    true,
+    true
   );
+
   updateCartSummary(groupedCartItems);
   updateCartCount();
 }
 
+// ✅ Event listener
 cartListElement.addEventListener("click", (event) => {
   const removeButton = event.target.closest(".cart-card__remove");
 
-  if (removeButton) {
-    removeProductFromCart(removeButton.dataset.id);
-    void renderCartContents();
-  }
+  if (!removeButton) return;
+
+  removeProductFromCart(removeButton.dataset.id);
+  renderCartContents();
 });
 
-await loadHeaderFooter();
-void renderCartContents();
+// ✅ INITIAL LOAD (VERY IMPORTANT)
+renderCartContents();
+loadHeaderFooter();

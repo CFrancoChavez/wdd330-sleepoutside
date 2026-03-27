@@ -907,28 +907,14 @@ footer {
   max-width: 300px;
   object-fit: cover;
 }
-
-/* Container to align current price and strikethrough on the same line */
-.price-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 15px 0;
-  flex-wrap: wrap;
+.product-card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Style for the original price (MSRP) */
-.product__original-price s {
-  color: #777; /* Gray so it doesn't compete with the actual price */
-  font-size: 0.9em;
-}
-
-/* The discount label (Flag) */
-.product-card__discount {
-  background-color: #cc0000; /* Rojo alerta */
-  color: #fff;
-  padding: 3px 8px;
-  font-weight: 700;
-  border-radius: 4px;
-  font-size: 0.85em;
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }

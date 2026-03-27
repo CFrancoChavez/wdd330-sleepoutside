@@ -19,59 +19,50 @@ if (!cartItems || cartItems.length === 0) {
   const dataSource = new ProductData("tents"); // Category doesn't matter for findProductById
   let total = 0;
 
-  const itemPromises = cartItems.map(async (item) => {
-    try {
-      // Fetch full product details
-      const fullProduct = await dataSource.findProductById(item.Id);
-      
-      if (!fullProduct) {
-        return null;
-      }
+ const itemPromises = cartItems.map(async (item) => {
+  try {
+    // We tried to bring in data from the API, but if it fails (e.g. product not found), we fall back to the item data from LocalStorage.
+    const fullProduct = await dataSource.findProductById(item.Id);
+    
+    const productData = fullProduct || item;
 
-      const unitPrice = Number(item.FinalPrice || item.SuggestedRetailPrice || 0);
-      const quantity = Number(item.quantity || 1);
-      const lineTotal = unitPrice * quantity;
-      total += lineTotal;
+    // We ensure numeric values ​​are used to avoid the "undefined" error.
+    const unitPrice = Number(productData.FinalPrice || productData.SuggestedRetailPrice || 0);
+    const quantity = Number(item.quantity || 1);
+    const lineTotal = unitPrice * quantity;
+    
+    total += lineTotal;
 
-      // Create checkout item element
-      const li = document.createElement("li");
-      li.className = "cart-card";
-      li.innerHTML = `
-        <img class="cart-card__image" src="${fullProduct.Image}" alt="${fullProduct.Name}" />
-        <div>
-          <h3>${fullProduct.Brand?.Name || "Unknown Brand"}</h3>
-          <p>${fullProduct.NameWithoutBrand || fullProduct.Name}</p>
-          ${fullProduct.Colors && fullProduct.Colors[0] ? `<p class="product__color">${fullProduct.Colors[0].ColorName}</p>` : ""}
-          <p>Qty: ${quantity}</p>
-        </div>
-        <div class="cart-card__pricing">
-          <span class="cart-card__price-each">${formatCurrency(unitPrice)} each</span>
-          <span class="cart-card__price">${formatCurrency(lineTotal)}</span>
-        </div>
-      `;
-      return li;
-    } catch (e) {
-      console.error(`Error loading product ${item.Id}:`, e);
-      
-      // Fallback: show basic cart item
-      const li = document.createElement("li");
-      li.className = "cart-card";
-      li.innerHTML = `
-        <div>
-          <h3>Product</h3>
-          <p>${item.NameWithoutBrand || item.Name || "Unknown Product"}</p>
-        </div>
-        <div class="cart-card__pricing">
-          <span class="cart-card__price-each">${formatCurrency(item.FinalPrice || item.SuggestedRetailPrice || 0)} each</span>
-          <span class="cart-card__price">${formatCurrency((item.FinalPrice || item.SuggestedRetailPrice || 0) * (item.quantity || 1))}</span>
-          <span>Qty: ${item.quantity || 1}</span>
-        </div>
-      `;
+    // We create the element with the data we have (API or LocalStorage)
+    const li = document.createElement("li");
+    li.className = "cart-card";
+    
+    // If there's no image in the API, we try the item's image, otherwise a default one
+    const imgUrl = productData.Image || "../images/no-image.png"; 
 
-      total += Number(item.FinalPrice || item.SuggestedRetailPrice || 0) * Number(item.quantity || 1);
-      return li;
-    }
-  });
+    li.innerHTML = `
+      <img class="cart-card__image" src="${imgUrl}" alt="${productData.Name}" />
+      <div>
+        <h3>${productData.Brand?.Name || "Brand"}</h3>
+        <p>${productData.NameWithoutBrand || productData.Name || "Product"}</p>
+        ${productData.Colors?.[0] ? `<p class="product__color">${productData.Colors[0].ColorName}</p>` : ""}
+        <p>Qty: ${quantity}</p>
+      </div>
+      <div class="cart-card__pricing">
+        <span class="cart-card__price-each">${formatCurrency(unitPrice)} each</span>
+        <span class="cart-card__price">${formatCurrency(lineTotal)}</span>
+      </div>
+    `;
+    return li;
+
+  } catch (e) {
+    // The catch function now only catches catastrophic errors, not "product not found" errors.
+    console.error("Error crítico en item:", e);
+    const li = document.createElement("li");
+    li.innerHTML = `<p>Error loading ${item.Name || "item"}</p>`;
+    return li;
+  }
+});
 
   // Wait for all products to load
   const items = await Promise.all(itemPromises);

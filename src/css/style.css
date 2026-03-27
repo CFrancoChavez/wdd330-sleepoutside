@@ -899,9 +899,22 @@ footer {
 .modal-btn--secondary:hover {
   background-color: #d8d8d8;
 }
+
+/* Product card image styles */
 .product-card img {
   width: 100%;
   height: auto;
   max-width: 300px;
   object-fit: cover;
+}
+.product-card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }

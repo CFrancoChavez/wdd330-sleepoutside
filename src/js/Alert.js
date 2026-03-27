@@ -10,35 +10,50 @@ export default class Alert {
     this.customPath = path;
   }
 
+  // async getAlerts() {
+  //   // Try multiple path strategies to handle different server layouts
+  //   const pathStrategies = this.customPath
+  //     ? [this.customPath]
+  //     : [
+  //         `./json/alerts.json`, // Same directory level
+  //         `../json/alerts.json`, // One level up
+  //         `/json/alerts.json`, // Absolute from root
+  //         `../../json/alerts.json`, // Two levels up
+  //         `src/json/alerts.json`, // Live Server from root
+  //         `src/public/json/alerts.json`, // Live Server public folder
+  //       ];
+
+  //   for (const path of pathStrategies) {
+  //     try {
+  //       const response = await fetch(path);
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         return Array.isArray(data) ? data : [];
+  //       }
+  //     } catch (e) {
+  //       // Continue to next strategy
+  //     }
+  //   }
+
+  //   // If all paths fail, return empty array (no alerts is acceptable)
+  //   return [];
+  // }
   async getAlerts() {
-    // Try multiple path strategies to handle different server layouts
-    const pathStrategies = this.customPath
-      ? [this.customPath]
-      : [
-          `./json/alerts.json`, // Same directory level
-          `../json/alerts.json`, // One level up
-          `/json/alerts.json`, // Absolute from root
-          `../../json/alerts.json`, // Two levels up
-          `src/json/alerts.json`, // Live Server from root
-          `src/public/json/alerts.json`, // Live Server public folder
-        ];
-
-    for (const path of pathStrategies) {
-      try {
-        const response = await fetch(path);
-        if (response.ok) {
-          const data = await response.json();
-          return Array.isArray(data) ? data : [];
-        }
-      } catch (e) {
-        // Continue to next strategy
+    // En Vite con root: "src", los archivos en public/json/ se sirven en /json/
+    const path = "/json/alerts.json"; 
+    
+    try {
+      const response = await fetch(path);
+      if (response.ok) {
+        const data = await response.json();
+        return Array.isArray(data) ? data : [];
       }
+      return [];
+    } catch (e) {
+      console.warn("Alerts file not found at", path);
+      return [];
     }
-
-    // If all paths fail, return empty array (no alerts is acceptable)
-    return [];
-  }
-
+}
   buildAlertSection(alerts) {
     if (!alerts.length) {
       return null;

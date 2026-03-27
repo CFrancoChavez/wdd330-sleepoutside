@@ -21,12 +21,23 @@ function stripHtml(htmlString) {
   return content.textContent.trim();
 }
 
+function getSiteBasePath() {
+  const modulePath = new URL(import.meta.url).pathname;
+  const markers = ["/src/js/cart.js", "/js/cart.js", "/assets/"];
+  for (const marker of markers) {
+    const markerIndex = modulePath.indexOf(marker);
+    if (markerIndex >= 0) {
+      return modulePath.slice(0, markerIndex);
+    }
+  }
+  return "";
+}
+
 function cartItemTemplate(item) {
   const description = stripHtml(item.DescriptionHtmlSimple);
 
-  const detailsPath = window.location.pathname.includes("/cart/")
-    ? `../product_pages/?product=${item.Id}`
-    : `./product_pages/?product=${item.Id}`;
+  const siteBasePath = getSiteBasePath();
+  const detailsPath = `${siteBasePath}/product_pages/index.html?product=${item.Id}`;
 
   return `<li class="cart-card divider">
     <a href="${detailsPath}" class="cart-card__image">

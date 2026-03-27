@@ -1,4 +1,4 @@
-import { addProductToCart, formatCurrency, imageExists, updateCartCount } from "./utils.mjs";
+import { addProductToCart, formatCurrency, imageExists, updateCartCount, alertMessage } from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -76,7 +76,11 @@ export default class ProductDetails {
     
     // Actualizar UI
     updateCartCount();
-    this.showAddedToCartFeedback();
+    
+    // Show success message using alertMessage utility
+    const productName = this.product.NameWithoutBrand || this.product.Name || 'Product';
+    const quantity = this.selectedQuantity > 1 ? ` (${this.selectedQuantity} items)` : '';
+    alertMessage(`${productName}${quantity} added to cart!`, false);
     
     // Opcional: Resetear cantidad a 1 después de añadir
     this.selectedQuantity = 1;

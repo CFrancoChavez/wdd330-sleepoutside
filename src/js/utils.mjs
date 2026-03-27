@@ -237,3 +237,53 @@ export function renderListWithTemplate(
   const htmlStrings = list.map(templateFn);
   parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
 }
+
+export function alertMessage(message, scroll = true) {
+  // Create element to hold the alert
+  const alert = document.createElement('div');
+  // Add a class to style the alert
+  alert.classList.add('alert');
+  
+  // Set the contents - include a message and a close button (X)
+  if (typeof message === 'string') {
+    alert.innerHTML = `
+      <div class="alert__content">
+        <p>${message}</p>
+        <button type="button" class="alert__close" aria-label="Close alert">&times;</button>
+      </div>
+    `;
+  } else {
+    // Handle object messages (from server errors)
+    const errorMessage = message.message ? JSON.stringify(message.message) : String(message);
+    alert.innerHTML = `
+      <div class="alert__content">
+        <p>${errorMessage}</p>
+        <button type="button" class="alert__close" aria-label="Close alert">&times;</button>
+      </div>
+    `;
+  }
+  
+  // Add a listener to the alert to see if they clicked on the close button
+  alert.addEventListener('click', function(e) {
+    // Check if the close button was clicked
+    if (e.target.classList.contains('alert__close') || e.target.tagName === 'BUTTON') {
+      const main = document.querySelector('main');
+      if (main && main.contains(this)) {
+        main.removeChild(this);
+      }
+    }
+  });
+  
+  // Add the alert to the top of main
+  const main = document.querySelector('main');
+  if (main) {
+    main.prepend(alert);
+  }
+  
+  // Make sure they see the alert by scrolling to the top of the window
+  // You may not always want to do this, so default to scroll=true but allow it to be overridden
+  if (scroll) {
+    window.scrollTo(0, 0);
+  }
+}
+

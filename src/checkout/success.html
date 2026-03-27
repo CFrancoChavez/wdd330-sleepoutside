@@ -1,0 +1,50 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Sleep Outside | Order Confirmation</title>
+
+    <link rel="stylesheet" href="../../src/css/style.css" />
+  </head>
+
+  <body>
+    <header id="main-header" class="divider"></header>
+
+    <main class="divider">
+      <nav class="breadcrumb">
+        <a href="../../">Home</a>
+        <span>/</span>
+        <a href="../../cart/">My Cart</a>
+        <span>/</span>
+        <span>Order Confirmation</span>
+      </nav>
+
+      <section class="success-container">
+        <div class="success-content">
+          <h1>Thank You for Your Order!</h1>
+          <p class="success-message">Your order has been successfully placed and confirmed.</p>
+          
+          <div class="success-details">
+            <p>We've sent a confirmation email with your order details. You can expect your items to be shipped within 2-3 business days.</p>
+            <p>If you have any questions, please don't hesitate to contact our customer service team.</p>
+          </div>
+
+          <div class="success-actions">
+            <a href="../../" class="button-link">Continue Shopping</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="main-footer"></footer>
+    <script src="../../src/js/utils.mjs" type="module"></script>
+    <script type="module">
+      import { loadHeaderFooter } from "../../src/js/utils.mjs";
+      await loadHeaderFooter();
+    </script>
+  </body>
+</html>

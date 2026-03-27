@@ -17,22 +17,78 @@
 
     <main class="divider">
       <nav class="breadcrumb">
-        <a href="/wdd330-sleepoutside/">Home</a>
+        <a href="../">Home</a>
         <span>/</span>
-        <a href="/wdd330-sleepoutside/cart/">My Cart</a>
+        <a href="../cart/">My Cart</a>
         <span>/</span>
         <span>Checkout</span>
       </nav>
 
-      <section class="products">
-        <h2>Review & Place your Order</h2>
-        <ul class="product-list cart-list" id="checkout-items"></ul>
-        <div class="checkout-summary">
-          <div class="cart-total">
-            <span>Total</span>
-            <strong class="cart-total__amount" id="checkout-total">$0.00</strong>
-          </div>
-          <button class="button-link" id="place-order">Place Order</button>
+      <section class="checkout-container">
+        <div class="checkout-items">
+          <h2>Review Your Order</h2>
+          <ul class="product-list cart-list" id="checkout-items"></ul>
+        </div>
+
+        <div class="checkout-form-container">
+          <form id="checkoutForm" class="checkout-form">
+            <h2>Shipping Information</h2>
+            <div class="form-group">
+              <input type="text" id="fname" name="fname" placeholder="First Name" required />
+            </div>
+            <div class="form-group">
+              <input type="text" id="lname" name="lname" placeholder="Last Name" required />
+            </div>
+            <div class="form-group">
+              <input type="text" id="street" name="street" placeholder="Street Address" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <input type="text" id="city" name="city" placeholder="City" required />
+              </div>
+              <div class="form-group">
+                <input type="text" id="state" name="state" placeholder="State" required />
+              </div>
+              <div class="form-group">
+                <input type="text" id="zip" name="zip" placeholder="ZIP Code" required />
+              </div>
+            </div>
+
+            <h2>Payment Information</h2>
+            <div class="form-group">
+              <input type="text" id="cardNumber" name="cardNumber" placeholder="Card Number" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <input type="text" id="expiration" name="expiration" placeholder="MM/YY" required />
+              </div>
+              <div class="form-group">
+                <input type="text" id="code" name="code" placeholder="CVV" required />
+              </div>
+            </div>
+
+            <div class="order-summary">
+              <h3>Order Summary</h3>
+              <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="summary-subtotal">$0.00</span>
+              </div>
+              <div class="summary-row">
+                <span>Tax (6%):</span>
+                <span id="summary-tax">$0.00</span>
+              </div>
+              <div class="summary-row">
+                <span>Shipping:</span>
+                <span id="summary-shipping">$0.00</span>
+              </div>
+              <div class="summary-row summary-total">
+                <span>Total:</span>
+                <span id="summary-total">$0.00</span>
+              </div>
+            </div>
+
+            <button type="submit" class="button-link" id="place-order">Place Order</button>
+          </form>
         </div>
       </section>
     </main>

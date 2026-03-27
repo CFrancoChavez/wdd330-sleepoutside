@@ -1,5 +1,6 @@
-import ProductData from "./ProductData.mjs";
+import ExternalServices from "./ExternalServices.mjs";
 import ProductList from "./ProductList.mjs";
+import QuickView from "./QuickView.mjs";
 import { loadHeaderFooter, getParam } from "./utils.mjs";
 
 await loadHeaderFooter();
@@ -10,11 +11,15 @@ if (!category) {
   document.querySelector(".product-list").innerHTML =
     "<p>Please select a category.</p>";
 } else {
-  const dataSource = new ProductData(category);
+  const dataSource = new ExternalServices(category);
   const listElement = document.querySelector(".product-list");
 
   const myList = new ProductList(category, dataSource, listElement);
   myList.init();
+
+  // Initialize Quick View modal
+  const quickView = new QuickView(dataSource, "quick-view-modal", category);
+  quickView.init();
 
   // Update page title
   const pageTitle = document.querySelector("#page-title");

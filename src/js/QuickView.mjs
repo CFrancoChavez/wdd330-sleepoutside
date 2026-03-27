@@ -1,18 +1,6 @@
 import { formatCurrency } from "./utils.mjs";
 
-function getSiteBasePath() {
-  const modulePath = new URL(import.meta.url).pathname;
-  const markers = ["/src/js/QuickView.mjs", "/js/QuickView.mjs", "/assets/"];
 
-  for (const marker of markers) {
-    const markerIndex = modulePath.indexOf(marker);
-    if (markerIndex >= 0) {
-      return modulePath.slice(0, markerIndex);
-    }
-  }
-
-  return "";
-}
 
 export default class QuickView {
   constructor(dataSource, modalId = "quick-view-modal", category = "tents") {
@@ -116,8 +104,7 @@ export default class QuickView {
       return;
     }
 
-    const siteBasePath = getSiteBasePath();
-    const productPageUrl = `${siteBasePath}/product_pages/index.html?product=${product.Id}&category=${this.category}`;
+    const productPageUrl = `/product_pages/?product=${product.Id}&category=${this.category}`;
 
     const retail = product.SuggestedRetailPrice || product.FinalPrice;
     const final = product.FinalPrice;

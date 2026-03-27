@@ -117,7 +117,7 @@ if (confirmCheckoutBtn) {
       }
       
       // Redirect to success page
-      window.location.href = "./success.html";
+      window.location.href = "/checkout/success.html";
     } catch (error) {
       console.error("Error placing order:", error);
       
@@ -158,6 +158,6 @@ const continueFromSuccessBtn = document.querySelector("#continue-from-success-bt
 if (continueFromSuccessBtn) {
   continueFromSuccessBtn.addEventListener("click", () => {
     // Navigate to cart page (which will be empty)
-    window.location.href = "../cart/";
+    window.location.href = "/cart/";
   });
 }

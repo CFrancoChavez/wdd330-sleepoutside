@@ -140,46 +140,13 @@ export function getParam(param) {
   return urlParams.get(param);
 }
 
-function getSiteBasePath() {
-  const modulePath = new URL(import.meta.url).pathname;
-  const markers = ["/src/js/utils.mjs", "/js/utils.mjs", "/assets/"];
-
-  for (const marker of markers) {
-    const markerIndex = modulePath.indexOf(marker);
-    if (markerIndex >= 0) {
-      return modulePath.slice(0, markerIndex);
-    }
-  }
-
-  return "";
-}
-
 function resolveTemplatePath(path) {
-  if (!path.startsWith("/")) {
-    return path;
-  }
-
-  const siteBasePath = getSiteBasePath();
-  return `${siteBasePath}${path}`;
+  // With Vite, all absolute paths work as-is
+  return path;
 }
 
 function normalizeAssetPaths(container) {
-  const siteBasePath = getSiteBasePath();
-
-  if (!siteBasePath) {
-    return;
-  }
-
-  container.querySelectorAll("[href^='/'], [src^='/']").forEach((element) => {
-    const attr = element.hasAttribute("href") ? "href" : "src";
-    const value = element.getAttribute(attr);
-
-    if (!value || value.startsWith("//")) {
-      return;
-    }
-
-    element.setAttribute(attr, `${siteBasePath}${value}`);
-  });
+  // With Vite, absolute paths are already correct - no normalization needed
 }
 
 export async function loadTemplate(path) {

@@ -1,18 +1,6 @@
 import { imageExists, renderListWithTemplate } from "./utils.mjs";
 
-function getSiteBasePath() {
-  const modulePath = new URL(import.meta.url).pathname;
-  const markers = ["/src/js/ProductList.mjs", "/js/ProductList.mjs", "/assets/"];
 
-  for (const marker of markers) {
-    const markerIndex = modulePath.indexOf(marker);
-    if (markerIndex >= 0) {
-      return modulePath.slice(0, markerIndex);
-    }
-  }
-
-  return "";
-}
 
 // function productCardTemplate(product) {
 //   const isDiscounted = product.FinalPrice < product.SuggestedRetailPrice;
@@ -38,8 +26,7 @@ function productCardTemplate(product, category) {
   // 2. Calculamos el porcentaje de ahorro
   const discountPercent = isDiscounted ? Math.round((savings / retail) * 100) : 0;
 
-  const siteBasePath = getSiteBasePath();
-  const productPageUrl = `${siteBasePath}/product_pages/index.html?product=${product.Id}&category=${category}`;
+  const productPageUrl = `/product_pages/?product=${product.Id}&category=${category}`;
 
   return `<li class="product-card" data-product-id="${product.Id}">
     <a href="${productPageUrl}">

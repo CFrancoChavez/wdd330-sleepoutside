@@ -1,4 +1,9 @@
-import { buildSiteUrl, imageExists, renderListWithTemplate } from "./utils.mjs";
+import {
+  buildSiteUrl,
+  imageExists,
+  normalizeAssetUrl,
+  renderListWithTemplate,
+} from "./utils.mjs";
 
 
 
@@ -27,10 +32,11 @@ function productCardTemplate(product, category) {
   const discountPercent = isDiscounted ? Math.round((savings / retail) * 100) : 0;
 
   const productPageUrl = buildSiteUrl(`product_pages/index.html?product=${product.Id}&category=${category}`);
+  const productImageUrl = normalizeAssetUrl(product.Image);
 
   return `<li class="product-card" data-product-id="${product.Id}">
     <a href="${productPageUrl}">
-      <img src="${product.Image}" alt="${product.Name}">
+      <img src="${productImageUrl}" alt="${product.Name}">
       
       ${isDiscounted ? `<span class="product-card__discount">-${discountPercent}% OFF</span>` : ''}
       
@@ -61,7 +67,7 @@ export default class ProductList {
     const imageChecks = await Promise.all(
       list.map(async (product) => ({
         product,
-        hasImage: await imageExists(product.Image),
+        hasImage: await imageExists(normalizeAssetUrl(product.Image)),
       })),
     );
 

@@ -1,4 +1,4 @@
-import { buildSiteUrl, formatCurrency } from "./utils.mjs";
+import { buildSiteUrl, formatCurrency, normalizeAssetUrl } from "./utils.mjs";
 
 
 
@@ -100,6 +100,7 @@ export default class QuickView {
     }
 
     const productPageUrl = buildSiteUrl(`product_pages/index.html?product=${product.Id}&category=${this.category}`);
+    const productImageUrl = normalizeAssetUrl(product.Image);
 
     const retail = product.SuggestedRetailPrice || product.FinalPrice;
     const final = product.FinalPrice;
@@ -113,7 +114,7 @@ export default class QuickView {
     modalContent.innerHTML = `
       <div class="quick-view__container">
         <div class="quick-view__image-section">
-          <img src="${product.Image}" alt="${product.Name}" class="quick-view__image">
+          <img src="${productImageUrl}" alt="${product.Name}" class="quick-view__image">
           ${isDiscounted ? `<span class="product-card__discount">-${discountPercent}% OFF</span>` : ''}
         </div>
         <div class="quick-view__details-section">

@@ -7,6 +7,7 @@ import {
   renderListWithTemplate,
   updateCartCount,
   imageExists,          // ✅ FIXED
+  normalizeAssetUrl,
   setLocalStorage,      // ✅ FIXED
   buildSiteUrl
 } from "./utils.mjs";
@@ -25,10 +26,11 @@ function stripHtml(htmlString) {
 function cartItemTemplate(item) {
   const description = stripHtml(item.DescriptionHtmlSimple);
   const detailsPath = buildSiteUrl(`product_pages/index.html?product=${item.Id}`);
+  const itemImageUrl = normalizeAssetUrl(item.Image);
 
   return `<li class="cart-card divider">
     <a href="${detailsPath}" class="cart-card__image">
-      <img src="${item.Image}" alt="${item.Name}" />
+      <img src="${itemImageUrl}" alt="${item.Name}" />
     </a>
     <div class="cart-card__details">
       <a href="${detailsPath}" class="cart-card__name-link">
@@ -60,7 +62,7 @@ async function renderCartContents() {
   const imageChecks = await Promise.all(
     cartItems.map(async (item) => ({
       item,
-      hasImage: await imageExists(item.Image),
+      hasImage: await imageExists(normalizeAssetUrl(item.Image)),
     }))
   );
 

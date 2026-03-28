@@ -178,6 +178,37 @@ export function buildSiteUrl(path) {
   return `${getSiteBasePath()}${normalizedPath}`;
 }
 
+export function normalizeAssetUrl(assetPath) {
+  const value = String(assetPath || "").trim();
+
+  if (!value) {
+    return value;
+  }
+
+  // Keep absolute and protocol-relative URLs unchanged.
+  if (/^(https?:)?\/\//i.test(value) || value.startsWith("data:") || value.startsWith("blob:")) {
+    return value;
+  }
+
+  if (!value.startsWith("/")) {
+    return value;
+  }
+
+  const base = getSiteBasePath();
+  const normalizedValue = value.replace(/^\/+/, "");
+
+  if (
+    base.includes("/src/") &&
+    (normalizedValue.startsWith("images/") ||
+      normalizedValue.startsWith("json/") ||
+      normalizedValue.startsWith("partials/"))
+  ) {
+    return `${base}public/${normalizedValue}`;
+  }
+
+  return `${base}${normalizedValue}`;
+}
+
 function isSourceMode() {
   return new URL(import.meta.url).pathname.includes("/src/js/");
 }

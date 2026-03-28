@@ -7,7 +7,8 @@ import {
   renderListWithTemplate,
   updateCartCount,
   imageExists,          // ✅ FIXED
-  setLocalStorage       // ✅ FIXED
+  setLocalStorage,      // ✅ FIXED
+  buildSiteUrl
 } from "./utils.mjs";
 
 const cartListElement = document.querySelector(".cart-list");
@@ -23,7 +24,7 @@ function stripHtml(htmlString) {
 
 function cartItemTemplate(item) {
   const description = stripHtml(item.DescriptionHtmlSimple);
-  const detailsPath = `/product_pages/?product=${item.Id}`;
+  const detailsPath = buildSiteUrl(`product_pages/index.html?product=${item.Id}`);
 
   return `<li class="cart-card divider">
     <a href="${detailsPath}" class="cart-card__image">

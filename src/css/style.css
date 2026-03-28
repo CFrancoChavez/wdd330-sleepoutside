@@ -242,6 +242,23 @@ button {
   margin: 0.5em 0;
 }
 
+.product-card__quick-view {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--secondary-color);
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.product-card__quick-view:hover {
+  background-color: var(--tertiary-color);
+}
+
 .card__brand {
   font-size: var(--small-font);
 }
@@ -1094,24 +1111,44 @@ footer {
   position: relative;
   background: white;
   border-radius: 0.5rem;
-  max-width: 700px;
+  max-width: 760px;
   width: 100%;
-  max-height: 90vh;
+  max-height: min(82vh, 680px);
   overflow-y: auto;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   animation: modalSlideIn 0.3s ease-out;
 }
 
+#quick-view-modal .modal__close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--light-grey);
+  background-color: white;
+  color: var(--dark-grey);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+#quick-view-modal .modal__close:hover {
+  background-color: var(--primary-color);
+}
+
 #quick-view-modal .modal__content {
-  padding: 2rem 1.5rem;
-  padding-top: 1.5rem;
+  padding: 1.25rem 1.25rem 1.1rem;
 }
 
 /* Quick View Container */
 #quick-view-modal .quick-view__container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  grid-template-columns: minmax(190px, 1fr) minmax(250px, 1.2fr);
+  gap: 1.1rem;
   align-items: start;
 }
 
@@ -1121,13 +1158,15 @@ footer {
 
 #quick-view-modal .quick-view__image {
   width: 100%;
-  max-width: 400px;
+  max-width: 320px;
   height: auto;
   border-radius: 0.25rem;
+  margin: 0 auto;
+  display: block;
 }
 
 #quick-view-modal .quick-view__details-section {
-  padding: 1rem 0;
+  padding: 0.2rem 0;
 }
 
 #quick-view-modal .quick-view__brand {
@@ -1137,9 +1176,9 @@ footer {
 }
 
 #quick-view-modal .quick-view__name {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: var(--dark-grey);
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
   font-family: var(--font-headline);
 }
 
@@ -1147,8 +1186,8 @@ footer {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+  margin-bottom: 0.9rem;
 }
 
 #quick-view-modal .quick-view__original-price {
@@ -1162,11 +1201,11 @@ footer {
 }
 
 #quick-view-modal .quick-view__info {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 #quick-view-modal .quick-view__info-item {
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
 }
 
 #quick-view-modal .quick-view__info-item strong {
@@ -1177,15 +1216,17 @@ footer {
 
 #quick-view-modal .quick-view__info-item p {
   color: var(--dark-grey);
-  padding: 0.5rem 0;
+  padding: 0.2rem 0;
   margin: 0;
+  max-height: 6.5rem;
+  overflow-y: auto;
 }
 
 #quick-view-modal .quick-view__view-details {
   display: inline-block;
   background-color: var(--primary-color);
   color: var(--dark-grey);
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   text-decoration: none;
   border-radius: 0.25rem;
   font-weight: 600;
@@ -1230,22 +1271,23 @@ footer {
 @media (max-width: 700px) {
   #quick-view-modal .quick-view__container {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
-  .modal__container {
+  #quick-view-modal .modal__container {
     border-radius: 0.5rem;
+    max-height: 86vh;
   }
 
-  .modal__content {
-    padding: 1.5rem 1rem;
+  #quick-view-modal .modal__content {
+    padding: 1rem;
   }
 
-  .quick-view__name {
+  #quick-view-modal .quick-view__name {
     font-size: 1.25rem;
   }
 
-  .quick-view__price {
+  #quick-view-modal .quick-view__price {
     font-size: 1rem;
   }
 }

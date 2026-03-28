@@ -1,10 +1,3 @@
-function convertToJson(response) {
-  if (!response.ok) {
-    throw new Error("Bad Response");
-  }
-  return response.json();
-}
-
 export default class Alert {
   constructor(path) {
     this.customPath = path;
@@ -39,20 +32,32 @@ export default class Alert {
   //   return [];
   // }
   async getAlerts() {
-    // En Vite con root: "src", los archivos en public/json/ se sirven en /json/
-    const path = "/json/alerts.json"; 
-    
-    try {
-      const response = await fetch(path);
-      if (response.ok) {
-        const data = await response.json();
-        return Array.isArray(data) ? data : [];
+    const sourceMode = new URL(import.meta.url).pathname.includes("/src/js/");
+    const paths = [
+      ...(sourceMode
+        ? [
+            "/src/public/json/alerts.json",
+            "./src/public/json/alerts.json",
+            "./public/json/alerts.json",
+          ]
+        : []),
+      "/json/alerts.json",
+      "./json/alerts.json",
+    ];
+
+    for (const path of paths) {
+      try {
+        const response = await fetch(path);
+        if (response.ok) {
+          const data = await response.json();
+          return Array.isArray(data) ? data : [];
+        }
+      } catch (_e) {
+        // Try next path.
       }
-      return [];
-    } catch (e) {
-      console.warn("Alerts file not found at", path);
-      return [];
     }
+
+    return [];
 }
   buildAlertSection(alerts) {
     if (!alerts.length) {
@@ -95,6 +100,7 @@ export default class Alert {
         main.prepend(section);
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Unable to load alerts", error);
     }
   }

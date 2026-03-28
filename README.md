@@ -19,6 +19,13 @@
 - `npm run start` starts up a local server and updates on any JS or CSS/SCSS 
 - `npm run build` to build final files when you are ready to turn in.
 
+### Deployment Notes
+
+- Source code lives in `src/`.
+- Production build output is generated in `dist/`.
+- GitHub Pages deployment is configured via `.github/workflows/deploy-pages.yml` and publishes the built `dist/` folder.
+- You do not need a root `index.html` for Pages when using this workflow.
+
 
 ---
 _BYU-Pathway Worldwide improves lives through access to spiritually based, online affordable higher education. Its mission is to develop disciples of Jesus Christ who are leaders in their homes, the Church, and their communities._

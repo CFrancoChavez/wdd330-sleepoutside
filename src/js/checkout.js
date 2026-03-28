@@ -1,4 +1,4 @@
-import { loadHeaderFooter, updateCartCount, getCartItems, formatCurrency, alertMessage } from "./utils.mjs";
+import { buildSiteUrl, loadHeaderFooter, updateCartCount, formatCurrency, alertMessage } from "./utils.mjs";
 import CheckoutProcess from "./CheckoutProcess.mjs";
 
 await loadHeaderFooter();
@@ -39,6 +39,7 @@ if (checkout.list && checkout.list.length > 0) {
       `;
       return li;
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error("Error loading item:", e);
       const li = document.createElement("li");
       li.innerHTML = `<p>Error loading ${item.Name || "item"}</p>`;
@@ -52,7 +53,7 @@ if (checkout.list && checkout.list.length > 0) {
   }
 } else {
   if (checkoutItems) {
-    checkoutItems.innerHTML = '<p>Your cart is empty. Add items before checking out.</p>';
+    checkoutItems.innerHTML = "<p>Your cart is empty. Add items before checking out.</p>";
   }
   if (checkoutForm) {
     checkoutForm.style.display = "none";
@@ -90,6 +91,7 @@ if (checkoutForm) {
         confirmModal.hidden = false;
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Error during checkout:", error);
       alertMessage("An error occurred. Please try again.", true);
     }
@@ -104,6 +106,7 @@ if (confirmCheckoutBtn) {
       // Send order to server
       const result = await checkout.checkout(checkoutForm);
       
+      // eslint-disable-next-line no-console
       console.log("Order placed successfully:", result);
       
       // Clear cart
@@ -117,8 +120,9 @@ if (confirmCheckoutBtn) {
       }
       
       // Redirect to success page
-      window.location.href = "/checkout/success.html";
+      window.location.href = buildSiteUrl("checkout/success.html");
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Error placing order:", error);
       
       // Hide confirmation modal
@@ -130,7 +134,7 @@ if (confirmCheckoutBtn) {
       // Show error message
       let errorMessage = "There was an error placing your order. Please try again.";
       if (error && error.message) {
-        if (typeof error.message === 'object') {
+        if (typeof error.message === "object") {
           errorMessage = JSON.stringify(error.message);
         } else {
           errorMessage = error.message;
@@ -158,6 +162,6 @@ const continueFromSuccessBtn = document.querySelector("#continue-from-success-bt
 if (continueFromSuccessBtn) {
   continueFromSuccessBtn.addEventListener("click", () => {
     // Navigate to cart page (which will be empty)
-    window.location.href = "/cart/";
+    window.location.href = buildSiteUrl("cart/index.html");
   });
 }

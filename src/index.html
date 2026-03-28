@@ -13,12 +13,13 @@
     <main class="divider">
       <div class="hero">
         <img
-          src="./images/banner-sm.jpg"
-          srcset="./images/banner-sm.jpg 500w, ./images/banner.jpg"
+          src="./public/images/banner-sm.jpg"
+          srcset="./public/images/banner-sm.jpg 500w, ./public/images/banner.jpg 1200w"
+          sizes="100vw"
           alt="image of a high mountain lake"
         />
         <div class="logo logo--square">
-          <img src="./images/noun_Tent_2517.svg" alt="tent image for logo" />
+          <img src="./public/images/noun_Tent_2517.svg" alt="tent image for logo" />
           <div>Sleep<span class="highlight">Outside</span></div>
         </div>
         <div class="mission">
@@ -60,6 +61,9 @@
       <div id="quick-view-modal" class="modal" hidden>
         <div class="modal__overlay"></div>
         <div class="modal__container">
+          <button type="button" class="modal__close" aria-label="Close quick view">
+            <span>&times;</span>
+          </button>
           <div class="modal__content"></div>
         </div>
       </div>

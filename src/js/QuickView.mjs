@@ -1,4 +1,4 @@
-import { formatCurrency } from "./utils.mjs";
+import { buildSiteUrl, formatCurrency } from "./utils.mjs";
 
 
 
@@ -9,7 +9,6 @@ export default class QuickView {
     this.modal = document.getElementById(modalId);
     this.isLoading = false;
     this.isOpen = false;
-    this.hoverTimeout = null;
     this.category = category;
     
     if (!this.modal) {
@@ -23,35 +22,31 @@ export default class QuickView {
       return;
     }
 
-    // Open modal after 2 seconds of hovering on a product card
-    document.addEventListener("mouseenter", (e) => {
-      const productCard = e.target.closest(".product-card");
-      if (productCard && !this.isLoading && !this.isOpen) {
-        const productId = productCard.getAttribute("data-product-id");
-        if (productId) {
-          // Clear any existing timeout
-          clearTimeout(this.hoverTimeout);
-          
-          // Open after 1 second
-          this.hoverTimeout = setTimeout(() => {
-            this.openQuickView(productId);
-          }, 1000);
-        }
+    document.addEventListener("click", (e) => {
+      const quickViewButton = e.target.closest(".product-card__quick-view");
+      if (!quickViewButton) {
+        return;
       }
-    }, true);
 
-    // Cancel timeout if mouse leaves the card before 2 seconds
-    document.addEventListener("mouseleave", (e) => {
-      const productCard = e.target.closest(".product-card");
-      if (productCard) {
-        clearTimeout(this.hoverTimeout);
+      const productId = quickViewButton.getAttribute("data-product-id");
+      if (!productId) {
+        return;
       }
-    }, true);
+
+      this.openQuickView(productId);
+    });
 
     // Close when clicking on overlay
     const overlay = this.modal.querySelector(".modal__overlay");
     if (overlay) {
       overlay.addEventListener("click", () => {
+        this.closeQuickView();
+      });
+    }
+
+    const closeButton = this.modal.querySelector(".modal__close");
+    if (closeButton) {
+      closeButton.addEventListener("click", () => {
         this.closeQuickView();
       });
     }
@@ -104,7 +99,7 @@ export default class QuickView {
       return;
     }
 
-    const productPageUrl = `/product_pages/?product=${product.Id}&category=${this.category}`;
+    const productPageUrl = buildSiteUrl(`product_pages/index.html?product=${product.Id}&category=${this.category}`);
 
     const retail = product.SuggestedRetailPrice || product.FinalPrice;
     const final = product.FinalPrice;
@@ -158,7 +153,6 @@ export default class QuickView {
     if (this.modal && this.isOpen) {
       this.modal.hidden = true;
       this.isOpen = false;
-      clearTimeout(this.hoverTimeout);
     }
   }
 }

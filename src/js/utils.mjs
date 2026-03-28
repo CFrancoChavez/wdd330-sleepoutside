@@ -140,23 +140,108 @@ export function getParam(param) {
   return urlParams.get(param);
 }
 
+export function getSiteBasePath() {
+  const pathname = window.location.pathname;
+  const sectionMarkers = ["/cart/", "/checkout/", "/product_listing/", "/product_pages/"];
+
+  const markerIndex = sectionMarkers
+    .map((marker) => pathname.indexOf(marker))
+    .filter((index) => index >= 0)
+    .sort((a, b) => a - b)[0];
+
+  if (typeof markerIndex === "number") {
+    const prefix = pathname.slice(0, markerIndex);
+    return prefix ? `${prefix}/` : "/";
+  }
+
+  const modulePathname = new URL(import.meta.url).pathname;
+  const srcMarker = "/src/js/";
+  const srcMarkerIndex = modulePathname.indexOf(srcMarker);
+  if (
+    srcMarkerIndex >= 0 &&
+    (pathname === "/" || pathname.endsWith("/index.html"))
+  ) {
+    const prefix = modulePathname.slice(0, srcMarkerIndex);
+    return `${prefix}/src/`;
+  }
+
+  if (pathname.endsWith("/")) {
+    return pathname;
+  }
+
+  const lastSlash = pathname.lastIndexOf("/");
+  return `${pathname.slice(0, lastSlash + 1)}`;
+}
+
+export function buildSiteUrl(path) {
+  const normalizedPath = String(path || "").replace(/^\/+/, "");
+  return `${getSiteBasePath()}${normalizedPath}`;
+}
+
+function isSourceMode() {
+  return new URL(import.meta.url).pathname.includes("/src/js/");
+}
+
 function resolveTemplatePath(path) {
-  // With Vite, all absolute paths work as-is
-  return path;
+  return buildSiteUrl(path);
 }
 
 function normalizeAssetPaths(container) {
-  // With Vite, absolute paths are already correct - no normalization needed
+  const base = getSiteBasePath();
+  const nodesWithHref = container.querySelectorAll("[href]");
+  const nodesWithSrc = container.querySelectorAll("[src]");
+
+  nodesWithHref.forEach((node) => {
+    const href = node.getAttribute("href");
+    if (!href || !href.startsWith("/") || href.startsWith("//")) {
+      return;
+    }
+    node.setAttribute("href", `${base}${href.replace(/^\/+/, "")}`);
+  });
+
+  nodesWithSrc.forEach((node) => {
+    const src = node.getAttribute("src");
+    if (!src || !src.startsWith("/") || src.startsWith("//")) {
+      return;
+    }
+
+    const normalizedSrc = src.replace(/^\/+/, "");
+    if (
+      base.includes("/src/") &&
+      (normalizedSrc.startsWith("images/") ||
+        normalizedSrc.startsWith("json/") ||
+        normalizedSrc.startsWith("partials/"))
+    ) {
+      node.setAttribute("src", `${base}public/${normalizedSrc}`);
+      return;
+    }
+
+    node.setAttribute("src", `${base}${normalizedSrc}`);
+  });
 }
 
 export async function loadTemplate(path) {
-  const response = await fetch(resolveTemplatePath(path));
+  const attempts = [
+    resolveTemplatePath(path),
+    resolveTemplatePath(`public/${path}`),
+    `./src/public/${path}`,
+    `/src/public/${path}`,
+    `./${path}`,
+    `/${path}`,
+  ];
 
-  if (!response.ok) {
-    throw new Error(`Unable to load template: ${path}`);
+  for (const attempt of attempts) {
+    try {
+      const response = await fetch(attempt);
+      if (response.ok) {
+        return response.text();
+      }
+    } catch (_error) {
+      // Try next location.
+    }
   }
 
-  return response.text();
+  throw new Error(`Unable to load template: ${path}`);
 }
 
 export function renderWithTemplate(template, parentElement, data, callback) {
@@ -176,9 +261,16 @@ export async function loadHeaderFooter() {
     return;
   }
 
+  const headerPath = isSourceMode()
+    ? "public/partials/header.html"
+    : "partials/header.html";
+  const footerPath = isSourceMode()
+    ? "public/partials/footer.html"
+    : "partials/footer.html";
+
   const [headerTemplate, footerTemplate] = await Promise.all([
-    loadTemplate("/partials/header.html"),
-    loadTemplate("/partials/footer.html"),
+    loadTemplate(headerPath),
+    loadTemplate(footerPath),
   ]);
 
   if (headerElement) {

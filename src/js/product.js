@@ -1,4 +1,4 @@
-import { getParam, loadHeaderFooter } from "./utils.mjs";
+import { buildSiteUrl, getParam, loadHeaderFooter } from "./utils.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 import ProductDetails from "./ProductDetails.mjs";
 import QuickView from "./QuickView.mjs";
@@ -18,7 +18,7 @@ quickView.init();
 // Update breadcrumb link to go back to the correct category
 const breadcrumbBack = document.querySelector("#breadcrumb-back");
 if (breadcrumbBack && categoryParam) {
-  breadcrumbBack.href = `../../product_listing/index.html?category=${categoryParam}`;
+  breadcrumbBack.href = buildSiteUrl(`product_listing/index.html?category=${categoryParam}`);
   const categoryName = categoryParam
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))

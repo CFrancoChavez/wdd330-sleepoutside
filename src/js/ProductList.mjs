@@ -1,4 +1,4 @@
-import { imageExists, renderListWithTemplate } from "./utils.mjs";
+import { buildSiteUrl, imageExists, renderListWithTemplate } from "./utils.mjs";
 
 
 
@@ -26,7 +26,7 @@ function productCardTemplate(product, category) {
   // 2. Calculamos el porcentaje de ahorro
   const discountPercent = isDiscounted ? Math.round((savings / retail) * 100) : 0;
 
-  const productPageUrl = `/product_pages/?product=${product.Id}&category=${category}`;
+  const productPageUrl = buildSiteUrl(`product_pages/index.html?product=${product.Id}&category=${category}`);
 
   return `<li class="product-card" data-product-id="${product.Id}">
     <a href="${productPageUrl}">
@@ -42,6 +42,7 @@ function productCardTemplate(product, category) {
         $${final.toFixed(2)}
       </p>
     </a>
+    <button type="button" class="product-card__quick-view" data-product-id="${product.Id}">Quick View</button>
   </li>`;
 }
 

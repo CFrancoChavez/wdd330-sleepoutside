@@ -1,3 +1,5 @@
+import { buildSiteUrl } from "./utils.mjs";
+
 export default class Alert {
   constructor(path) {
     this.customPath = path;
@@ -32,18 +34,15 @@ export default class Alert {
   //   return [];
   // }
   async getAlerts() {
-    const sourceMode = new URL(import.meta.url).pathname.includes("/src/js/");
-    const paths = [
-      ...(sourceMode
-        ? [
-            "/src/public/json/alerts.json",
-            "./src/public/json/alerts.json",
-            "./public/json/alerts.json",
-          ]
-        : []),
-      "/json/alerts.json",
-      "./json/alerts.json",
-    ];
+    const paths = this.customPath
+      ? [this.customPath]
+      : [
+          buildSiteUrl("json/alerts.json"),
+          "./json/alerts.json",
+          "./public/json/alerts.json",
+          "./src/public/json/alerts.json",
+          "/json/alerts.json",
+        ];
 
     for (const path of paths) {
       try {
@@ -58,7 +57,7 @@ export default class Alert {
     }
 
     return [];
-}
+  }
   buildAlertSection(alerts) {
     if (!alerts.length) {
       return null;

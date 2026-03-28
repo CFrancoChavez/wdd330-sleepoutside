@@ -157,11 +157,3 @@ if (continueFromConfirmBtn) {
   });
 }
 
-// Handle continue shopping from success modal
-const continueFromSuccessBtn = document.querySelector("#continue-from-success-btn");
-if (continueFromSuccessBtn) {
-  continueFromSuccessBtn.addEventListener("click", () => {
-    // Navigate to cart page (which will be empty)
-    window.location.href = buildSiteUrl("cart/index.html");
-  });
-}

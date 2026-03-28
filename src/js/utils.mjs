@@ -183,15 +183,27 @@ function normalizeAssetPaths(container) {
 }
 
 export async function loadTemplate(path) {
-  const response = await fetch(resolveTemplatePath(path));
+//   const response = await fetch(resolveTemplatePath(path));
+
+//   if (!response.ok) {
+//     throw new Error(`Unable to load template: ${path}`);
+//   }
+
+//   return response.text();
+// }
+  const response = await fetch(path);
 
   if (!response.ok) {
-    throw new Error(`Unable to load template: ${path}`);
+    // Si falla con la ruta absoluta, intentamos una relativa por si acaso
+    const fallbackResponse = await fetch("." + path);
+    if (!fallbackResponse.ok) {
+      throw new Error(`Unable to load template: ${path}`);
+    }
+    return fallbackResponse.text();
   }
 
   return response.text();
 }
-
 export function renderWithTemplate(template, parentElement, data, callback) {
   parentElement.innerHTML = template;
   normalizeAssetPaths(parentElement);
@@ -201,25 +213,50 @@ export function renderWithTemplate(template, parentElement, data, callback) {
   }
 }
 
+// export async function loadHeaderFooter() {
+//   const headerElement = document.querySelector("#main-header");
+//   const footerElement = document.querySelector("#main-footer");
+
+//   if (!headerElement && !footerElement) {
+//     return;
+//   }
+
+//   const [headerTemplate, footerTemplate] = await Promise.all([
+//     loadTemplate("/partials/header.html"),
+//     loadTemplate("/partials/footer.html"),
+//   ]);
+
+//   if (headerElement) {
+//     renderWithTemplate(headerTemplate, headerElement);
+//   }
+
+//   if (footerElement) {
+//     renderWithTemplate(footerTemplate, footerElement);
+//   }
+//}
 export async function loadHeaderFooter() {
   const headerElement = document.querySelector("#main-header");
   const footerElement = document.querySelector("#main-footer");
 
-  if (!headerElement && !footerElement) {
-    return;
-  }
+  if (!headerElement && !footerElement) return;
 
-  const [headerTemplate, footerTemplate] = await Promise.all([
-    loadTemplate("/partials/header.html"),
-    loadTemplate("/partials/footer.html"),
-  ]);
+  try {
+    // Usamos rutas relativas al servidor
+    // Importante: Asegúrate de que tus archivos estén en src/partials/
+    const [headerTemplate, footerTemplate] = await Promise.all([
+      loadTemplate("/partials/header.html"),
+      loadTemplate("/partials/footer.html"),
+    ]);
 
-  if (headerElement) {
-    renderWithTemplate(headerTemplate, headerElement);
-  }
+    if (headerElement) {
+      renderWithTemplate(headerTemplate, headerElement, null, updateCartCount);
+    }
 
-  if (footerElement) {
-    renderWithTemplate(footerTemplate, footerElement);
+    if (footerElement) {
+      renderWithTemplate(footerTemplate, footerElement);
+    }
+  } catch (error) {
+    console.error("Error loading header/footer:", error);
   }
 }
 

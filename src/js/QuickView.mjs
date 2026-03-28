@@ -21,16 +21,13 @@ export default class QuickView {
       return;
     }
 
-    // Open modal after 2 seconds of hovering on a product card
+    // 1. Abrir modal tras 1 segundo de hover en una tarjeta de producto
     document.addEventListener("mouseenter", (e) => {
       const productCard = e.target.closest(".product-card");
       if (productCard && !this.isLoading && !this.isOpen) {
         const productId = productCard.getAttribute("data-product-id");
         if (productId) {
-          // Clear any existing timeout
           clearTimeout(this.hoverTimeout);
-          
-          // Open after 1 second
           this.hoverTimeout = setTimeout(() => {
             this.openQuickView(productId);
           }, 1000);
@@ -38,7 +35,7 @@ export default class QuickView {
       }
     }, true);
 
-    // Cancel timeout if mouse leaves the card before 2 seconds
+    // 2. Cancelar el timeout si el mouse sale de la tarjeta
     document.addEventListener("mouseleave", (e) => {
       const productCard = e.target.closest(".product-card");
       if (productCard) {
@@ -46,15 +43,20 @@ export default class QuickView {
       }
     }, true);
 
-    // Close when clicking on overlay
-    const overlay = this.modal.querySelector(".modal__overlay");
-    if (overlay) {
-      overlay.addEventListener("click", () => {
-        this.closeQuickView();
-      });
-    }
+    // 3. DELEGACIÓN DE EVENTOS PARA CERRAR (X y Overlay)
+    // Escuchamos clics en todo el contenedor del modal
+    this.modal.addEventListener("click", (e) => {
+      // Detecta si el clic fue en el botón de cerrar (o en la X dentro de él)
+      const isCloseButton = e.target.closest(".modal__close");
+      // Detecta si el clic fue en el fondo oscuro (overlay)
+      const isOverlay = e.target.classList.contains("modal__overlay");
 
-    // Close with Escape key
+      if (isCloseButton || isOverlay) {
+        this.closeQuickView();
+      }
+    });
+
+    // 4. Cerrar con la tecla Escape
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && this.isOpen) {
         this.closeQuickView();
@@ -69,8 +71,6 @@ export default class QuickView {
 
     try {
       this.isLoading = true;
-
-      // Show modal in loading state
       this.modal.hidden = false;
       this.isOpen = true;
       
@@ -79,7 +79,6 @@ export default class QuickView {
         modalContent.innerHTML = '<p class="quick-view__loading">Loading product details...</p>';
       }
 
-      // Fetch product details
       const product = await this.dataSource.findProductById(productId);
 
       if (!product) {

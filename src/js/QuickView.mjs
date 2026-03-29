@@ -23,6 +23,7 @@ export default class QuickView {
     this.isOpen = false;
     this.hoverTimeout = null;
     this.category = category;
+    this.hoverTimeout = null;
     
     if (!this.modal) {
       console.warn(`QuickView: Modal with id "${modalId}" not found. Quick view will not work.`);

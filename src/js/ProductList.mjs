@@ -55,7 +55,7 @@ function productCardTemplate(product, category) {
         $${final.toFixed(2)}
       </p>
     </a>
-    <button type="button" class="product-card__quick-view" data-product-id="${product.Id}" aria-label="Quick view ${product.NameWithoutBrand}">Quick View</button>
+    <button type="button" class="product-card__quick-view" data-product-id="${product.Id}" aria-label="Quick view ${product.NameWithoutBrand || product.Name}">Quick View</button>
   </li>`;
 }
 

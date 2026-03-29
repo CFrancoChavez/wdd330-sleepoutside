@@ -1,5 +1,19 @@
 import { formatCurrency } from "./utils.mjs";
 
+function getSiteBasePath() {
+  const modulePath = new URL(import.meta.url).pathname;
+  const markers = ["/src/js/QuickView.mjs", "/js/QuickView.mjs", "/assets/"];
+
+  for (const marker of markers) {
+    const markerIndex = modulePath.indexOf(marker);
+    if (markerIndex >= 0) {
+      return modulePath.slice(0, markerIndex);
+    }
+  }
+
+  return "";
+}
+
 export default class QuickView {
   constructor(dataSource, modalId = "quick-view-modal", category = "tents") {
     this.dataSource = dataSource;
@@ -7,6 +21,7 @@ export default class QuickView {
     this.modal = document.getElementById(modalId);
     this.isLoading = false;
     this.isOpen = false;
+    this.hoverTimeout = null;
     this.category = category;
     
     if (!this.modal) {
@@ -95,6 +110,8 @@ export default class QuickView {
       return;
     }
 
+    const siteBasePath = getSiteBasePath();
+    const productPageUrl = `${siteBasePath}product_pages/index.html?product=${product.Id}&category=${this.category}`;
     const retail = product.SuggestedRetailPrice || product.FinalPrice;
     const final = product.FinalPrice;
     const isDiscounted = final < retail;
@@ -130,7 +147,7 @@ export default class QuickView {
             </div>
           </div>
 
-          <a href="../product_pages/index.html?product=${product.Id}&category=${this.category}" class="button-link quick-view__view-details">View Full Details</a>
+          <a href="${productPageUrl}" class="button-link quick-view__view-details">View Full Details</a>
         </div>
       </div>
     `;

@@ -124,7 +124,7 @@ export default class QuickView {
               <strong>Colors:</strong>
               <p>${colors}</p>
             </div>
-            <div class="quick-view__info-item">
+            <div class="quick-view__info-item quick-view__info-item--description">
               <strong>Description:</strong>
               <p>${product.DescriptionHtmlSimple || product.Description || "No description available"}</p>
             </div>

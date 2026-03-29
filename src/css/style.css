@@ -1017,7 +1017,9 @@ footer {
   max-width: 90%;
   max-height: 90vh;
   width: 600px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   z-index: 2001;
 }
 
@@ -1047,6 +1049,10 @@ footer {
 
 .modal__content {
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
 }
 
 /* Quick View Container */
@@ -1054,6 +1060,8 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  height: 100%;
+  overflow: hidden;
 }
 
 @media screen and (min-width: 600px) {
@@ -1089,6 +1097,8 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .quick-view__brand {
@@ -1098,6 +1108,7 @@ footer {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0;
+  flex-shrink: 0;
 }
 
 .quick-view__name {
@@ -1106,6 +1117,7 @@ footer {
   color: var(--dark-grey);
   margin: 0;
   line-height: 1.2;
+  flex-shrink: 0;
 }
 
 .quick-view__price {
@@ -1113,6 +1125,7 @@ footer {
   align-items: center;
   gap: 0.75rem;
   font-size: 1.25rem;
+  flex-shrink: 0;
 }
 
 .quick-view__original-price {
@@ -1136,12 +1149,16 @@ footer {
   padding: 1rem 0;
   border-top: 1px solid var(--light-grey);
   border-bottom: 1px solid var(--light-grey);
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .quick-view__info-item {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .quick-view__info-item strong {
@@ -1155,6 +1172,7 @@ footer {
   margin: 0;
   padding: 0;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 .quick-view__loading,
@@ -1173,6 +1191,7 @@ footer {
 .quick-view__view-details {
   align-self: flex-start;
   margin-top: 0.5rem;
+  flex-shrink: 0;
 }
 
 @media screen and (max-width: 600px) {

@@ -1,5 +1,19 @@
 import { formatCurrency } from "./utils.mjs";
 
+function getSiteBasePath() {
+  const modulePath = new URL(import.meta.url).pathname;
+  const markers = ["/src/js/QuickView.mjs", "/js/QuickView.mjs", "/assets/"];
+
+  for (const marker of markers) {
+    const markerIndex = modulePath.indexOf(marker);
+    if (markerIndex >= 0) {
+      return modulePath.slice(0, markerIndex);
+    }
+  }
+
+  return "";
+}
+
 export default class QuickView {
   constructor(dataSource, modalId = "quick-view-modal", category = "tents") {
     this.dataSource = dataSource;
@@ -9,6 +23,7 @@ export default class QuickView {
     this.isOpen = false;
     this.hoverTimeout = null;
     this.category = category;
+    this.hoverTimeout = null;
     
     if (!this.modal) {
       console.warn(`QuickView: Modal with id "${modalId}" not found. Quick view will not work.`);
@@ -21,42 +36,37 @@ export default class QuickView {
       return;
     }
 
-    // 1. Abrir modal tras 1 segundo de hover en una tarjeta de producto
-    document.addEventListener("mouseenter", (e) => {
-      const productCard = e.target.closest(".product-card");
-      if (productCard && !this.isLoading && !this.isOpen) {
-        const productId = productCard.getAttribute("data-product-id");
-        if (productId) {
-          clearTimeout(this.hoverTimeout);
-          this.hoverTimeout = setTimeout(() => {
-            this.openQuickView(productId);
-          }, 1000);
-        }
+    // Listen for clicks on Quick View buttons
+    document.addEventListener("click", (e) => {
+      const quickViewButton = e.target.closest(".product-card__quick-view");
+      if (!quickViewButton) {
+        return;
       }
-    }, true);
 
-    // 2. Cancelar el timeout si el mouse sale de la tarjeta
-    document.addEventListener("mouseleave", (e) => {
-      const productCard = e.target.closest(".product-card");
-      if (productCard) {
-        clearTimeout(this.hoverTimeout);
+      const productId = quickViewButton.getAttribute("data-product-id");
+      if (!productId) {
+        return;
       }
-    }, true);
 
-    // 3. DELEGACIÓN DE EVENTOS PARA CERRAR (X y Overlay)
-    // Escuchamos clics en todo el contenedor del modal
-    this.modal.addEventListener("click", (e) => {
-      // Detecta si el clic fue en el botón de cerrar (o en la X dentro de él)
-      const isCloseButton = e.target.closest(".modal__close");
-      // Detecta si el clic fue en el fondo oscuro (overlay)
-      const isOverlay = e.target.classList.contains("modal__overlay");
-
-      if (isCloseButton || isOverlay) {
-        this.closeQuickView();
-      }
+      this.openQuickView(productId);
     });
 
-    // 4. Cerrar con la tecla Escape
+    // Close when clicking on overlay
+    const overlay = this.modal.querySelector(".modal__overlay");
+    if (overlay) {
+      overlay.addEventListener("click", () => {
+        this.closeQuickView();
+      });
+    }
+
+    const closeButton = this.modal.querySelector(".modal__close");
+    if (closeButton) {
+      closeButton.addEventListener("click", () => {
+        this.closeQuickView();
+      });
+    }
+
+    // Close with Escape key
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && this.isOpen) {
         this.closeQuickView();
@@ -101,6 +111,8 @@ export default class QuickView {
       return;
     }
 
+    const siteBasePath = getSiteBasePath();
+    const productPageUrl = `${siteBasePath}product_pages/index.html?product=${product.Id}&category=${this.category}`;
     const retail = product.SuggestedRetailPrice || product.FinalPrice;
     const final = product.FinalPrice;
     const isDiscounted = final < retail;
@@ -130,13 +142,13 @@ export default class QuickView {
               <strong>Colors:</strong>
               <p>${colors}</p>
             </div>
-            <div class="quick-view__info-item">
+            <div class="quick-view__info-item quick-view__info-item--description">
               <strong>Description:</strong>
               <p>${product.DescriptionHtmlSimple || product.Description || "No description available"}</p>
             </div>
           </div>
 
-          <a href="../../product_pages/index.html?product=${product.Id}&category=${this.category}" class="button-link quick-view__view-details">View Full Details</a>
+          <a href="${productPageUrl}" class="button-link quick-view__view-details">View Full Details</a>
         </div>
       </div>
     `;

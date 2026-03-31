@@ -115,6 +115,8 @@ export default class CheckoutProcess {
       
       const result = await response.json();
       console.log("Server response:", result);
+      localStorage.removeItem("so-cart"); // Limpia el carrito
+      window.location.href = "../checkout/success.html"; // Redirige al éxito
       return result;
     } catch (error) {
       console.error("Error sending order to server:", error);
